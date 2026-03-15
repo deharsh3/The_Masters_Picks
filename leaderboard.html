@@ -157,6 +157,16 @@ Click a team to see their players ▼
 
 <div id="cutline" style="margin-bottom:10px;font-weight:bold"></div>
 
+<div style="margin-bottom:10px;">
+<input 
+id="teamSearch"
+type="text"
+placeholder="Search for your team..."
+style="padding:8px;width:250px;border-radius:4px;border:none"
+onkeyup="filterTeams()"
+>
+</div>
+
 <table id="leaderboard">
 <thead>
 <tr>
@@ -465,6 +475,35 @@ renderLeaderboard()
 
 }
 
+function filterTeams(){
+
+const input =
+document.getElementById("teamSearch")
+.value
+.toLowerCase()
+
+const rows =
+document.querySelectorAll("#leaderboard tbody tr")
+
+for(let i=0;i<rows.length;i+=2){
+
+const teamRow = rows[i]
+const detailRow = rows[i+1]
+
+const text =
+teamRow.innerText.toLowerCase()
+
+const match = text.includes(input)
+
+teamRow.style.display =
+match ? "" : "none"
+
+detailRow.style.display =
+match ? "none" : "none"
+
+}
+
+}
 
 </script>
 

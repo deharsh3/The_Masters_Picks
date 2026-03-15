@@ -95,6 +95,14 @@ font-weight:bold;
 
 <h1>Submitted Teams</h1>
 
+<input
+id="teamSearch"
+type="text"
+placeholder="Search for your team..."
+style="padding:8px;width:250px;border-radius:4px;border:none;margin-bottom:15px"
+onkeyup="filterTeams()"
+>
+
 <div id="teams"></div>
 
 <script>
@@ -166,6 +174,30 @@ expanded ? "none" : "block"
 
 arrow.textContent =
 expanded ? "▶" : "▼"
+
+}
+
+function filterTeams(){
+
+const input =
+document.getElementById("teamSearch")
+.value
+.toLowerCase()
+
+const teams =
+document.querySelectorAll(".team")
+
+teams.forEach(team=>{
+
+const name =
+team.innerText.toLowerCase()
+
+team.style.display =
+name.includes(input)
+? ""
+: "none"
+
+})
 
 }
 
