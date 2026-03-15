@@ -65,6 +65,12 @@ text-decoration:underline;
 color:#fff3a0;
 }
 
+.arrow{
+margin-right:8px;
+color:#0b3d0b;
+font-weight:bold;
+}
+
 </style>
 
 </head>
@@ -132,6 +138,7 @@ const playersHTML = players
 div.innerHTML=`
 
 <h3 onclick="togglePlayers(this)">
+<span class="arrow">▶</span>
 ${team.name}
 </h3>
 
@@ -150,11 +157,15 @@ container.appendChild(div)
 function togglePlayers(el){
 
 const players = el.nextElementSibling
+const arrow = el.querySelector(".arrow")
+
+const expanded = players.style.display === "block"
 
 players.style.display =
-players.style.display==="block"
-? "none"
-: "block"
+expanded ? "none" : "block"
+
+arrow.textContent =
+expanded ? "▶" : "▼"
 
 }
 

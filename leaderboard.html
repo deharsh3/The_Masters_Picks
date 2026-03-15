@@ -178,6 +178,11 @@ const TEAMS_ENDPOINT =
 const LEADERBOARD_ENDPOINT =
 "https://pufdcfsgdabjtnxfxuat.functions.supabase.co/getLeaderboard"
 
+const PLAYERS_ENDPOINT =
+"https://pufdcfsgdabjtnxfxuat.supabase.co/rest/v1/players?select=name,odds"
+
+let playerOdds = {}
+
 let teams=[]
 
 async function loadTeams(){
@@ -189,7 +194,29 @@ Authorization:`Bearer ${API_KEY}`
 }
 })
 
-teams = await res.json()
+teams = (await res.json()).map(team => ({
+...team,
+players: typeof team.players === "string"
+ ? JSON.parse(team.players)
+ : team.players
+}))
+
+}
+
+async function loadPlayerOdds(){
+
+const res = await fetch(PLAYERS_ENDPOINT,{
+headers:{
+apikey:API_KEY,
+Authorization:`Bearer ${API_KEY}`
+}
+})
+
+const players = await res.json()
+
+players.forEach(p=>{
+playerOdds[p.name] = Number(p.odds)
+})
 
 }
 
@@ -231,6 +258,8 @@ async function init(){
 
 await loadTeams()
 
+await loadPlayerOdds()
+
 await loadScores()
 
 renderLeaderboard()
@@ -256,6 +285,17 @@ return best4.reduce((a,b)=>a+b,0)
 
 }
 
+function calculateTiebreaker(players){
+
+const odds = players
+.map(p => playerOdds[p] ?? 999)
+.sort((a,b)=>a-b)
+
+const lowestFive = odds.slice(0,5)
+
+return lowestFive.reduce((a,b)=>a+b,0) / lowestFive.length
+
+}
 
 function renderLeaderboard(){
 
@@ -265,10 +305,7 @@ tbody.innerHTML=""
 teams
 .map(team=>{
 
-const players =
- typeof team.players === "string"
-   ? JSON.parse(team.players)
-   : team.players
+const players = team.players
 
 const playerScores = players.map(p=>({
  name:p,
@@ -286,11 +323,19 @@ return{
  name:team.name,
  players:playerScores,
  best4,
- total
+ total,
+ tiebreaker: calculateTiebreaker(players)
 }
 
 })
-.sort((a,b)=>a.total-b.total)
+.sort((a,b)=>{
+
+if(a.total !== b.total)
+return a.total - b.total
+
+return b.tiebreaker - a.tiebreaker
+
+})
 .forEach((team,i)=>{
 
 const row=document.createElement("tr")
@@ -303,10 +348,18 @@ if(i===2) medal = "🥉 "
 
 row.innerHTML=`
 <td>${i+1}</td>
+
 <td style="cursor:pointer;font-weight:${i<3?'bold':'normal'}">
+
 <span class="arrow">▶</span>
 ${medal}${team.name}
+
+<div style="font-size:11px;color:#777">
+Tiebreaker (avg of 5 lowest odds): ${team.tiebreaker.toFixed(1)}
+</div>
+
 </td>
+
 <td>${team.total}</td>
 `
 
@@ -345,18 +398,24 @@ const statusIcon =
 
 return `
 <div style="display:flex;justify-content:space-between">
+
 <span style="${missedCut?'color:#999;text-decoration:line-through':''}">
-${statusIcon} ${p.name}
+${counting ? "✔" : "✖"} ${statusIcon} ${p.name}
 </span>
 
 <span ${counting?'style="font-weight:bold"':''}>
+
 <span style="color:${scoreColor}">
 ${score}
 ${scores[p.name]?.madeCut === false ? " MC" : ""}
 </span>
+
 ${complete ? " F" : ""}
+
 ${hole ? " (Thru " + hole + ")" : ""}
+
 </span>
+
 </div>
 `
 

@@ -89,13 +89,13 @@ color:#fff3a0;
 <input id="name">
 <br><br>
 
-<h2>Favorites (max 2)</h2>
+<h2>Favorites (pick 2)</h2>
 <div id="favorite"></div>
 
-<h2>Mid Tier (max 2)</h2>
+<h2>Mid Tier (pick 2)</h2>
 <div id="mid"></div>
 
-<h2>Longshots (max 2)</h2>
+<h2>Longshots (pick 2)</h2>
 <div id="longshot"></div>
 
 <br>
@@ -111,6 +111,8 @@ const SUPABASE_FUNCTION =
 
 const PLAYERS_ENDPOINT =
 "https://pufdcfsgdabjtnxfxuat.supabase.co/rest/v1/players?select=*"
+
+let playerOdds = {}
 
 const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1ZmRjZnNnZGFianRueGZ4dWF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjA0MDIsImV4cCI6MjA4OTAzNjQwMn0.p8BiiUN6uHOcVQVDEOEAgc-B4ZsyLQtDqsIZ-tnu63c"
 
@@ -147,6 +149,23 @@ document
 .getElementById(p.tier)
 .appendChild(btn)
 
+})
+
+}
+
+async function loadPlayerOdds(){
+
+const res = await fetch(PLAYERS_ENDPOINT,{
+headers:{
+apikey:API_KEY,
+Authorization:`Bearer ${API_KEY}`
+}
+})
+
+const players = await res.json()
+
+players.forEach(p=>{
+playerOdds[p.name] = Number(p.odds)
 })
 
 }
