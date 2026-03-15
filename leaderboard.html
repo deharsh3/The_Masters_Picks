@@ -4,112 +4,11 @@
 <head>
 <title>Masters Pool Leaderboard</title>
 
-<style>
+<link rel="stylesheet" href="styles.css">
 
-body{
-font-family:Arial;
-background:#0b3d0b;
-color:white;
-padding:20px;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-background:white;
-color:black;
-}
-
-th,td{
-padding:10px;
-border-bottom:1px solid #ddd;
-}
-
-#header{
-text-align:center;
-margin-bottom:10px;
-}
-
-#header img{
-max-width:200px;
-width:100%;
-height:auto;
-display:block;
-margin:auto;
-}
-
-#navbar{
-display:flex;
-gap:20px;
-background:#083608;
-padding:12px;
-margin-bottom:20px;
-}
-
-#navbar a{
-color:#FFD700;
-text-decoration:none;
-font-weight:bold;
-font-size:16px;
-}
-
-#navbar a:hover{
-text-decoration:underline;
-color:#fff3a0;
-}
-
-#tournamentInfo{
-background:white;
-color:black;
-padding:12px;
-border-radius:6px;
-margin-bottom:15px;
-text-align:center;
-font-weight:bold;
-}
-
-#cutline{
-color:#0b3d0b;
-font-size:18px;
-}
-
-#tournamentStatus{
-font-size:14px;
-color:#666;
-}
-
-#expandNote{
-text-align:center;
-margin-bottom:10px;
-font-size:14px;
-color:#ddd;
-}
-
-.arrow{
-margin-right:8px;
-color:#0b3d0b;
-font-weight:bold;
-}
-
-#leaderboard tbody tr:hover{
-background:#f4f4f4;
-cursor:pointer;
-}
-
-#updateInfo{
-text-align:center;
-font-size:13px;
-margin-bottom:10px;
-color:#ddd;
-}
-
-#refreshSpinner{
-margin-left:10px;
-color:#FFD700;
-font-weight:bold;
-}
-
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
 
 </head>
 
@@ -133,8 +32,6 @@ font-weight:bold;
 
 <div id="tournamentInfo">
 
-<div id="cutline"></div>
-
 <div id="tournamentStatus">
 Live Tournament Scores
 </div>
@@ -145,7 +42,8 @@ Live Tournament Scores
 
 <span id="lastUpdated">Last Updated: --</span>
 
-<span id="refreshSpinner" style="display:none;">⏳ Updating...</span>
+<span class="refreshSpinner"
+id ="refreshSpinner>⏳ Updating...</span>
 
 </div>
 
@@ -155,14 +53,14 @@ Click a team to see their players ▼
 
 <h1>Masters Pool Leaderboard</h1>
 
-<div id="cutline" style="margin-bottom:10px;font-weight:bold"></div>
+<div class="cutline"
+id="cutline"></div>
 
 <div style="margin-bottom:10px;">
 <input 
-id="teamSearch"
+class="teamSearch"
 type="text"
 placeholder="Search for your team..."
-style="padding:8px;width:250px;border-radius:4px;border:none"
 onkeyup="filterTeams()"
 >
 </div>
@@ -364,7 +262,7 @@ row.innerHTML=`
 <span class="arrow">▶</span>
 ${medal}${team.name}
 
-<div style="font-size:11px;color:#777">
+<div class = "tiebreaker">
 Tiebreaker (avg of 5 lowest odds): ${team.tiebreaker.toFixed(1)}
 </div>
 
@@ -458,23 +356,6 @@ expanded ? "▶" : "▼"
 
 }
 
-init()
-
-
-setInterval(updateScores,60000)
-
-async function updateScores(){
-
-await loadScores()
-
-teams.forEach(team=>{
-team.total = calculateTeamScore(team)
-})
-
-renderLeaderboard()
-
-}
-
 function filterTeams(){
 
 const input =
@@ -502,6 +383,23 @@ detailRow.style.display =
 match ? "none" : "none"
 
 }
+
+}
+
+init()
+
+
+setInterval(updateScores,60000)
+
+async function updateScores(){
+
+await loadScores()
+
+teams.forEach(team=>{
+team.total = calculateTeamScore(team)
+})
+
+renderLeaderboard()
 
 }
 

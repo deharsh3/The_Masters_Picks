@@ -4,63 +4,11 @@
 
 <title>Masters Pool</title>
 
-<style>
+<link rel="stylesheet" href="styles.css">
 
-body{
-font-family:Arial;
-background:#0b3d0b;
-color:white;
-padding:20px;
-}
-
-button{
-padding:8px;
-margin:3px;
-}
-
-.player{
-display:block;
-margin:2px;
-}
-
-.selected{
-background:gold;
-}
-
-#header{
-text-align:center;
-margin-bottom:10px;
-}
-
-#header img{
-max-width:200px;
-width:100%;
-height:auto;
-display:block;
-margin:auto;
-}
-
-#navbar{
-display:flex;
-gap:20px;
-background:#083608;
-padding:12px;
-margin-bottom:20px;
-}
-
-#navbar a{
-color:#FFD700;
-text-decoration:none;
-font-weight:bold;
-font-size:16px;
-}
-
-#navbar a:hover{
-text-decoration:underline;
-color:#fff3a0;
-}
-
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
 
 </head>
 
@@ -84,7 +32,7 @@ color:#fff3a0;
 
 <h1>Masters Pool</h1>
 
-<div id="instructions" style="background:white;color:black;padding:15px;border-radius:6px;margin-bottom:20px">
+<div class="instructions">
 
 <h3>How to Submit Your Masters Pool Picks</h3>
 
@@ -129,8 +77,9 @@ Picks will lock when the tournament begins.
 
 </div>
 
-<div id="lockCountdown"
-style="text-align:center;margin-bottom:15px;font-weight:bold;color:#FFD700">
+<div class="lockCountdown"
+id="lockCountdown"
+>
 </div>
 
 <label>Your Name</label>
@@ -151,7 +100,8 @@ style="text-align:center;margin-bottom:15px;font-weight:bold;color:#FFD700">
 
 <button onclick="submitTeam()">Submit Team</button>
 
-<div id="message" style="margin-top:20px;font-weight:bold;"></div>
+<div class="message"
+id="message"></div>
 
 <script>
 
