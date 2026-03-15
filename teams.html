@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Submitted Teams</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0b3d0b;
+color:white;
+padding:20px;
+}
+
+.team{
+background:white;
+color:black;
+padding:10px;
+margin-bottom:10px;
+border-radius:5px;
+}
+
+.team h3{
+margin:0;
+cursor:pointer;
+}
+
+.players{
+display:none;
+margin-top:10px;
+}
+
+#navbar{
+display:flex;
+gap:20px;
+background:#083608;
+padding:12px;
+margin-bottom:
+
+</style>
+
+</head>
+
+<body>
+
+<div id="navbar">
+
+<a href="index.html">Submit Picks</a>
+
+<a href="teams.html">View Teams</a>
+
+<a href="leaderboard.html">Leaderboard</a>
+
+</div>
+
+<h1>Submitted Teams</h1>
+
+<div id="teams"></div>
+
+<script>
+
+const TEAMS_ENDPOINT =
+"https://pufdcfsgdabjtnxfxuat.supabase.co/rest/v1/teams?select=*"
+
+const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1ZmRjZnNnZGFianRueGZ4dWF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjA0MDIsImV4cCI6MjA4OTAzNjQwMn0.p8BiiUN6uHOcVQVDEOEAgc-B4ZsyLQtDqsIZ-tnu63c"
+
+async function loadTeams(){
+
+const res = await fetch(TEAMS_ENDPOINT,{
+headers:{
+apikey:API_KEY,
+Authorization:`Bearer ${API_KEY}`
+}
+})
+
+const teams = await res.json()
+
+console.log("Loaded teams:", teams)
+
+const container = document.getElementById("teams")
+
+teams
+.sort((a,b)=>a.name.localeCompare(b.name))
+.forEach(team=>{
+
+const div=document.createElement("div")
+
+div.className="team"
+
+const players = Array.isArray(team.players)
+  ? team.players
+  : JSON.parse(team.players)
+
+const playersHTML = players
+.map(p=>`<li>${p}</li>`)
+.join("")
+
+div.innerHTML=`
+
+<h3 onclick="togglePlayers(this)">
+${team.name}
+</h3>
+
+<ul class="players">
+${playersHTML}
+</ul>
+
+`
+
+container.appendChild(div)
+
+})
+
+}
+
+function togglePlayers(el){
+
+const players = el.nextElementSibling
+
+players.style.display =
+players.style.display==="block"
+? "none"
+: "block"
+
+}
+
+loadTeams()
+
+</script>
+
+</body>
+
+</html>

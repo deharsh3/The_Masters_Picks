@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Masters Pool</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0b3d0b;
+color:white;
+padding:20px;
+}
+
+button{
+padding:8px;
+margin:3px;
+}
+
+.player{
+display:block;
+margin:2px;
+}
+
+.selected{
+background:gold;
+}
+
+#navbar{
+display:flex;
+gap:20px;
+background:#083608;
+padding:12px;
+margin-bottom:
+
+</style>
+
+</head>
+
+<body>
+
+<div id="navbar">
+
+<a href="index.html">Submit Picks</a>
+
+<a href="teams.html">View Teams</a>
+
+<a href="leaderboard.html">Leaderboard</a>
+
+</div>
+
+<h1>Masters Pool</h1>
+
+<label>Your Name</label>
+<br>
+<input id="name">
+<br><br>
+
+<h2>Favorites (max 2)</h2>
+<div id="favorite"></div>
+
+<h2>Mid Tier (max 2)</h2>
+<div id="mid"></div>
+
+<h2>Longshots (max 2)</h2>
+<div id="longshot"></div>
+
+<br>
+
+<button onclick="submitTeam()">Submit Team</button>
+
+<div id="message" style="margin-top:20px;font-weight:bold;"></div>
+
+<script>
+
+const SUPABASE_FUNCTION =
+"https://pufdcfsgdabjtnxfxuat.functions.supabase.co/submitTeam"
+
+const PLAYERS_ENDPOINT =
+"https://pufdcfsgdabjtnxfxuat.supabase.co/rest/v1/players?select=*"
+
+const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1ZmRjZnNnZGFianRueGZ4dWF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjA0MDIsImV4cCI6MjA4OTAzNjQwMn0.p8BiiUN6uHOcVQVDEOEAgc-B4ZsyLQtDqsIZ-tnu63c"
+
+let selected=[]
+
+let tierCounts={
+favorite:0,
+mid:0,
+longshot:0
+}
+
+async function loadPlayers(){
+
+const res = await fetch(PLAYERS_ENDPOINT,{
+headers:{
+apikey:API_KEY,
+Authorization:`Bearer ${API_KEY}`
+}
+})
+
+const players = await res.json()
+
+players.forEach(p=>{
+
+const btn=document.createElement("button")
+
+btn.innerText=p.name+" ("+p.odds+")"
+
+btn.className="player"
+
+btn.onclick=()=>togglePlayer(p,btn)
+
+document
+.getElementById(p.tier)
+.appendChild(btn)
+
+})
+
+}
+
+function togglePlayer(player,btn){
+
+if(selected.includes(player.name)){
+
+selected=selected.filter(p=>p!==player.name)
+
+tierCounts[player.tier]--
+
+btn.classList.remove("selected")
+
+return
+
+}
+
+if(tierCounts[player.tier] >= 2){
+alert("Max players reached for "+player.tier)
+return
+}
+
+if(selected.length >= 6){
+alert("Team already has 6 players")
+return
+}
+
+selected.push(player.name)
+
+tierCounts[player.tier]++
+
+btn.classList.add("selected")
+
+}
+
+async function submitTeam(){
+
+const name=document
+.getElementById("name")
+.value
+.trim()
+
+const message=document.getElementById("message")
+
+if(!name){
+message.innerText="Please enter your name."
+message.style.color="yellow"
+return
+}
+
+if(selected.length !== 6){
+message.innerText="Please select 6 players."
+message.style.color="yellow"
+return
+}
+
+const res = await fetch(SUPABASE_FUNCTION,{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+apikey:API_KEY,
+Authorization:`Bearer ${API_KEY}`
+},
+body:JSON.stringify({
+name,
+players:selected
+})
+})
+
+console.log("Response:", res)
+
+const data = await res.json()
+
+if(data.status === "team saved"){
+
+message.innerText="✅ Team successfully submitted!"
+message.style.color="lightgreen"
+
+selected=[]
+tierCounts={favorite:0,mid:0,longshot:0}
+
+document
+.querySelectorAll(".selected")
+.forEach(b=>b.classList.remove("selected"))
+
+}else{
+
+message.innerText="❌ Error: "+data.error
+message.style.color="red"
+
+}
+
+}
+
+loadPlayers()
+
+</script>
+
+</body>
+
+</html>

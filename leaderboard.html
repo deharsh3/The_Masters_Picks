@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Masters Pool Leaderboard</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0b3d0b;
+color:white;
+padding:20px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+color:black;
+}
+
+th,td{
+padding:10px;
+border-bottom:1px solid #ddd;
+}
+
+#navbar{
+display:flex;
+gap:20px;
+background:#083608;
+padding:12px;
+margin-bottom:
+
+</style>
+
+</head>
+
+<body>
+
+<div id="navbar">
+
+<a href="index.html">Submit Picks</a>
+
+<a href="teams.html">View Teams</a>
+
+<a href="leaderboard.html">Leaderboard</a>
+
+</div>
+
+<h1>Masters Pool Leaderboard</h1>
+
+<div id="cutline" style="margin-bottom:10px;font-weight:bold"></div>
+
+<table id="leaderboard">
+<thead>
+<tr>
+<th>Rank</th>
+<th>Team</th>
+<th>Score</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<script>
+
+const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1ZmRjZnNnZGFianRueGZ4dWF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjA0MDIsImV4cCI6MjA4OTAzNjQwMn0.p8BiiUN6uHOcVQVDEOEAgc-B4ZsyLQtDqsIZ-tnu63c"
+
+const TEAMS_ENDPOINT =
+"https://pufdcfsgdabjtnxfxuat.supabase.co/rest/v1/teams?select=*"
+
+const LEADERBOARD_ENDPOINT =
+"https://pufdcfsgdabjtnxfxuat.functions.supabase.co/getLeaderboard"
+
+let teams=[]
+
+async function loadTeams(){
+
+const res = await fetch(TEAMS_ENDPOINT,{
+headers:{
+apikey:API_KEY,
+Authorization:`Bearer ${API_KEY}`
+}
+})
+
+teams = await res.json()
+
+}
+
+let scores={}
+
+async function loadScores(){
+
+const res = await fetch(LEADERBOARD_ENDPOINT,{
+ headers:{
+  apikey:API_KEY,
+  Authorization:`Bearer ${API_KEY}`
+ }
+})
+
+const data = await res.json()
+
+scores = data.scores || {}
+
+if(data.cutLine){
+document.getElementById("cutline").innerText =
+"CUT LINE: " + data.cutLine
+}
+
+console.log("Scores:", scores)
+
+}
+
+async function init(){
+
+await loadTeams()
+
+await loadScores()
+
+renderLeaderboard()
+
+}
+
+
+function calculateTeamScore(team){
+
+const players =
+ typeof team.players === "string"
+   ? JSON.parse(team.players)
+   : team.players
+
+const playerScores = players
+.map(p => scores[p]?.score ?? 0)
+
+playerScores.sort((a,b)=>a-b)
+
+const best4 = playerScores.slice(0,4)
+
+return best4.reduce((a,b)=>a+b,0)
+
+}
+
+
+function renderLeaderboard(){
+
+const tbody = document.querySelector("#leaderboard tbody")
+tbody.innerHTML=""
+
+teams
+.map(team=>{
+
+const players =
+ typeof team.players === "string"
+   ? JSON.parse(team.players)
+   : team.players
+
+const playerScores = players.map(p=>({
+ name:p,
+ score:scores?.[p]?.score ?? 0
+}))
+
+playerScores.sort((a,b)=>a.score-b.score)
+
+const best4 = playerScores.slice(0,4)
+
+const total =
+ best4.reduce((a,b)=>a+b.score,0)
+
+return{
+ name:team.name,
+ players:playerScores,
+ best4,
+ total
+}
+
+})
+.sort((a,b)=>a.total-b.total)
+.forEach((team,i)=>{
+
+const row=document.createElement("tr")
+
+let medal = ""
+
+if(i===0) medal = "🥇 "
+if(i===1) medal = "🥈 "
+if(i===2) medal = "🥉 "
+
+row.innerHTML=`
+<td>${i+1}</td>
+<td style="cursor:pointer;font-weight:${i<3?'bold':'normal'}">
+${medal}${team.name}
+</td>
+<td>${team.total}</td>
+`
+
+tbody.appendChild(row)
+
+const detailRow=document.createElement("tr")
+
+detailRow.style.display="none"
+
+
+
+const playerHtml = team.players.map(p=>{
+
+const counting =
+ team.best4.some(b=>b.name===p.name)
+
+const scoreObj = scores[p.name]
+
+const score = scoreObj?.score ?? 0
+const hole = scoreObj?.hole
+const complete = scoreObj?.complete
+
+const missedCut = scoreObj?.madeCut === false
+
+let scoreColor = "black"
+
+if(score < 0) scoreColor = "red"
+if(score > 0) scoreColor = "#555"
+
+const statusIcon =
+ complete
+ ? "⚪"
+ : hole
+ ? "🟢"
+ : ""
+
+return `
+<div style="display:flex;justify-content:space-between">
+<span style="${missedCut?'color:#999;text-decoration:line-through':''}">
+${statusIcon} ${p.name}
+</span>
+
+<span ${counting?'style="font-weight:bold"':''}>
+<span style="color:${scoreColor}">
+${p.score}
+${scores[p.name]?.madeCut === false ? " MC" : ""}
+</span>
+${complete ? " F" : ""}
+${hole ? " (Thru " + hole + ")" : ""}
+</span>
+</div>
+`
+
+}).join("")
+
+detailRow.innerHTML=`
+<td colspan="3" style="background:#f3f3f3">
+${playerHtml}
+</td>
+`
+
+tbody.appendChild(detailRow)
+
+row.onclick=()=>{
+
+detailRow.style.display =
+ detailRow.style.display==="none"
+ ? "table-row"
+ : "none"
+
+}
+
+})
+
+}
+
+init()
+
+
+setInterval(updateScores,60000)
+
+async function updateScores(){
+
+await loadScores()
+
+teams.forEach(team=>{
+team.total = calculateTeamScore(team)
+})
+
+renderLeaderboard()
+
+}
+
+
+</script>
+
+</body>
+
+</html>
