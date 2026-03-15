@@ -25,18 +25,86 @@ padding:10px;
 border-bottom:1px solid #ddd;
 }
 
+#header{
+text-align:center;
+margin-bottom:10px;
+}
+
+#header img{
+max-width:400px;
+width:100%;
+height:auto;
+}
+
 #navbar{
 display:flex;
 gap:20px;
 background:#083608;
 padding:12px;
-margin-bottom:
+margin-bottom:20px;
+}
+
+#navbar a{
+color:#FFD700;
+text-decoration:none;
+font-weight:bold;
+font-size:16px;
+}
+
+#navbar a:hover{
+text-decoration:underline;
+color:#fff3a0;
+}
+
+#tournamentInfo{
+background:white;
+color:black;
+padding:12px;
+border-radius:6px;
+margin-bottom:15px;
+text-align:center;
+font-weight:bold;
+}
+
+#cutline{
+color:#0b3d0b;
+font-size:18px;
+}
+
+#tournamentStatus{
+font-size:14px;
+color:#666;
+}
+
+#expandNote{
+text-align:center;
+margin-bottom:10px;
+font-size:14px;
+color:#ddd;
+}
+
+.arrow{
+margin-right:8px;
+color:#0b3d0b;
+font-weight:bold;
+}
+
+#leaderboard tbody tr:hover{
+background:#f4f4f4;
+cursor:pointer;
+}
 
 </style>
 
 </head>
 
 <body>
+
+<div id="header">
+
+<img src="images/masters-logo.png" alt="Masters Pool Logo">
+
+</div>
 
 <div id="navbar">
 
@@ -46,6 +114,20 @@ margin-bottom:
 
 <a href="leaderboard.html">Leaderboard</a>
 
+</div>
+
+<div id="tournamentInfo">
+
+<div id="cutline"></div>
+
+<div id="tournamentStatus">
+Live Tournament Scores
+</div>
+
+</div>
+
+<div id="expandNote">
+Click a team to see their players ▼
 </div>
 
 <h1>Masters Pool Leaderboard</h1>
@@ -189,6 +271,7 @@ if(i===2) medal = "🥉 "
 row.innerHTML=`
 <td>${i+1}</td>
 <td style="cursor:pointer;font-weight:${i<3?'bold':'normal'}">
+<span class="arrow">▶</span>
 ${medal}${team.name}
 </td>
 <td>${team.total}</td>
@@ -256,10 +339,16 @@ tbody.appendChild(detailRow)
 
 row.onclick=()=>{
 
+const expanded =
+detailRow.style.display === "table-row"
+
 detailRow.style.display =
- detailRow.style.display==="none"
- ? "table-row"
- : "none"
+expanded ? "none" : "table-row"
+
+const arrow = row.querySelector(".arrow")
+
+arrow.textContent =
+expanded ? "▶" : "▼"
 
 }
 
