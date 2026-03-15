@@ -94,6 +94,19 @@ background:#f4f4f4;
 cursor:pointer;
 }
 
+#updateInfo{
+text-align:center;
+font-size:13px;
+margin-bottom:10px;
+color:#ddd;
+}
+
+#refreshSpinner{
+margin-left:10px;
+color:#FFD700;
+font-weight:bold;
+}
+
 </style>
 
 </head>
@@ -102,7 +115,7 @@ cursor:pointer;
 
 <div id="header">
 
-<img src="images/masters-logo.png" alt="Masters Pool Logo">
+<img src="masters_logo.jfif" alt="Masters Pool Logo">
 
 </div>
 
@@ -123,6 +136,14 @@ cursor:pointer;
 <div id="tournamentStatus">
 Live Tournament Scores
 </div>
+
+</div>
+
+<div id="updateInfo">
+
+<span id="lastUpdated">Last Updated: --</span>
+
+<span id="refreshSpinner" style="display:none;">⏳ Updating...</span>
 
 </div>
 
@@ -174,20 +195,32 @@ let scores={}
 
 async function loadScores(){
 
+document.getElementById("refreshSpinner").style.display="inline"
+
 const res = await fetch(LEADERBOARD_ENDPOINT,{
- headers:{
-  apikey:API_KEY,
-  Authorization:`Bearer ${API_KEY}`
- }
+headers:{
+apikey:API_KEY,
+Authorization:`Bearer ${API_KEY}`
+}
 })
 
 const data = await res.json()
 
 scores = data.scores || {}
 
+document.getElementById("refreshSpinner").style.display="none"
+
+const now = new Date()
+
+document.getElementById("lastUpdated").innerText =
+"Last Updated: " +
+now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
+
 if(data.cutLine){
 document.getElementById("cutline").innerText =
 "CUT LINE: " + data.cutLine
+}
+
 }
 
 console.log("Scores:", scores)
