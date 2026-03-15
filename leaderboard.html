@@ -31,9 +31,11 @@ margin-bottom:10px;
 }
 
 #header img{
-max-width:400px;
+max-width:200px;
 width:100%;
 height:auto;
+display:block;
+margin:auto;
 }
 
 #navbar{
@@ -221,8 +223,6 @@ document.getElementById("cutline").innerText =
 "CUT LINE: " + data.cutLine
 }
 
-}
-
 console.log("Scores:", scores)
 
 }
@@ -351,7 +351,7 @@ ${statusIcon} ${p.name}
 
 <span ${counting?'style="font-weight:bold"':''}>
 <span style="color:${scoreColor}">
-${p.score}
+${score}
 ${scores[p.name]?.madeCut === false ? " MC" : ""}
 </span>
 ${complete ? " F" : ""}
