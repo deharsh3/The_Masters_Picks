@@ -173,6 +173,13 @@ return name
 .trim()
 }
 
+function toTitleCase(name){
+return name
+.split(" ")
+.map(w => w.charAt(0).toUpperCase() + w.slice(1))
+.join(" ")
+}
+
 async function init(){
 
 await loadTeams()
@@ -323,7 +330,7 @@ return `
 <div style="display:flex;justify-content:space-between">
 
 <span style="${missedCut?'color:#999;text-decoration:line-through':''}">
-${counting ? "✔" : "✖"} ${statusIcon} ${p.name}
+${counting ? "✔" : "✖"} ${statusIcon} ${toTitleCase(p.name)}
 </span>
 
 <span ${counting?'style="font-weight:bold"':''}>
