@@ -105,9 +105,11 @@ Authorization:`Bearer ${API_KEY}`
 
 teams = (await res.json()).map(team => ({
 ...team,
-players: typeof team.players === "string"
+players: (
+ typeof team.players === "string"
  ? JSON.parse(team.players)
  : team.players
+).map(normalizeName)
 }))
 
 }
@@ -196,7 +198,7 @@ const playerScores = players.map(p=>({
  score:scores?.[normalizeName(p)]?.score ?? 0
 }))
 
-playerScores.sort((a,b)=>a-b)
+playerScores.sort((a,b)=>a.score-b.score)
 
 const best4 = playerScores.slice(0,4)
 
@@ -207,7 +209,7 @@ return best4.reduce((a,b)=>a+b,0)
 function calculateTiebreaker(players){
 
 const odds = players
-.map(p => playerOdds[p] ?? 999)
+.map(p => playerOdds[normalizeName(p)] ?? 999)
 .sort((a,b)=>a-b)
 
 const lowestFive = odds.slice(0,5)
@@ -228,7 +230,7 @@ const players = team.players
 
 const playerScores = players.map(p=>({
  name:p,
- score:scores?.[p]?.score ?? 0
+ score:scores?.[normalizeName(p)]?.score ?? 0
 }))
 
 playerScores.sort((a,b)=>a.score-b.score)
