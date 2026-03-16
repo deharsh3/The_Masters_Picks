@@ -168,3 +168,18 @@ color:#FFD700;
 margin-top:20px;
 font-weight:bold;
 }
+
+/* The hero image */
+.hero-image {
+
+background-image: url("masters_banner.jpg")
+
+  /* Set a specific height */
+  height: 50%;width: 100%;
+
+  /* Position and center the image to scale nicely on all screens */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}

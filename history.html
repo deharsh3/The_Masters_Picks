@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Masters Pool Leaderboard</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div id="header">
+
+<img src="masters_logo.jfif" alt="Masters Pool Logo">
+
+</div>
+
+<div id="navbar">
+
+<a href="index.html">Submit Picks</a>
+
+<a href="teams.html">View Teams</a>
+
+<a href="leaderboard.html">Leaderboard</a>
+
+</div>
+
+<div id="tournamentInfo">
+
+<div id="tournamentStatus">
+Live Tournament Scores
+</div>
+
+</div>
+
+<div id="updateInfo">
+
+<span id="lastUpdated">Last Updated: --</span>
+
+<span class="refreshSpinner"
+id ="refreshSpinner">⏳ Updating...</span>
+
+</div>
+
+<div id="expandNote">
+Click a team to see their players ▼
+</div>
+
+<h1>Masters Pool Leaderboard</h1>
+
+<h2 id="poolTitle"></h2>
+
+<div class="cutline"
+id="cutline"></div>
+
+<div style="margin-bottom:10px;">
+<input 
+class="teamSearch"
+id="teamSearch"
+type="text"
+placeholder="Search for your team..."
+onkeyup="filterTeams()"
+>
+</div>
+
+<div style="margin-bottom:15px;">
+<select id="poolSelector" onchange="changePool()">
+</select>
+</div>
+
+<table id="leaderboard">
+<thead>
+<tr>
+<th>Rank</th>
+<th>Team</th>
+<th>Score</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<script>
+
+const API_KEY = "YOUR_KEY"
+
+const RESULTS_ENDPOINT =
+"https://pufdcfsgdabjtnxfxuat.supabase.co/rest/v1/pool_results?select=*"
+
+function toTitleCase(name){
+return name
+.split(" ")
+.map(w => w.charAt(0).toUpperCase() + w.slice(1))
+.join(" ")
+}
+
+const RESULTS_ENDPOINT =
+"https://pufdcfsgdabjtnxfxuat.supabase.co/rest/v1/pool_results?select=*"
+
+function populateDropdown(){
+
+const selector = document.getElementById("poolSelector")
+
+selector.innerHTML=""
+
+pools.forEach((pool,i)=>{
+
+const option = document.createElement("option")
+
+option.value = pool.id
+option.textContent =
+`${pool.year} ${pool.pool_name}`
+
+selector.appendChild(option)
+
+})
+
+}
+
+function changePool(){
+
+const selector = document.getElementById("poolSelector")
+
+const index = selector.value
+
+const pool = pools.find(p => p.id == selector.value)
+document.getElementById("poolTitle").innerText =
+`${pool.year} ${pool.pool_name}`
+
+renderLeaderboard(pool.leaderboard)
+
+}
+
+let pools = []
+
+async function loadHistory(){
+
+const res = await fetch(RESULTS_ENDPOINT,{
+headers:{
+apikey:API_KEY,
+Authorization:`Bearer ${API_KEY}`
+}
+})
+
+pools = await res.json()
+
+populateDropdown()
+
+renderLeaderboard(pools[0].leaderboard)
+
+}
+
+function renderLeaderboard(teams){
+
+const tbody = document.querySelector("#leaderboard tbody")
+tbody.innerHTML=""
+
+teams.forEach((team,i)=>{
+
+const row=document.createElement("tr")
+
+let medal=""
+
+if(i===0) medal="🥇 "
+if(i===1) medal="🥈 "
+if(i===2) medal="🥉 "
+
+row.innerHTML=`
+<td>${i+1}</td>
+
+<td style="cursor:pointer;font-weight:${i<3?'bold':'normal'}">
+
+<span class="arrow">▶</span>
+${medal}${team.name}
+
+</td>
+
+<td>${team.total}</td>
+`
+
+tbody.appendChild(row)
+
+const detailRow=document.createElement("tr")
+detailRow.style.display="none"
+
+const playerHtml = team.players.map(p=>{
+
+const counting = team.best4.includes(p.name)
+
+return `
+<div style="display:flex;justify-content:space-between">
+
+<span>
+${counting ? "✔" : "✖"} ${toTitleCase(p.name)}
+</span>
+
+<span ${counting?'style="font-weight:bold"':''}>
+${p.score}
+</span>
+
+</div>
+`
+
+}).join("")
+
+detailRow.innerHTML=`
+<td colspan="3" style="background:#f3f3f3">
+${playerHtml}
+</td>
+`
+
+tbody.appendChild(detailRow)
+
+row.onclick=()=>{
+
+const expanded =
+detailRow.style.display === "table-row"
+
+detailRow.style.display =
+expanded ? "none" : "table-row"
+
+const arrow = row.querySelector(".arrow")
+
+arrow.textContent =
+expanded ? "▶" : "▼"
+
+}
+
+})
+
+}
+
+function filterTeams(){
+
+const input =
+document.getElementById("teamSearch")
+.value
+.toLowerCase()
+
+const rows =
+document.querySelectorAll("#leaderboard tbody tr")
+
+for(let i=0;i<rows.length;i+=2){
+
+const teamRow = rows[i]
+const detailRow = rows[i+1]
+
+const text =
+teamRow.innerText.toLowerCase()
+
+const match = text.includes(input)
+
+teamRow.style.display =
+match ? "" : "none"
+
+detailRow.style.display = "none"
+
+}
+
+}
+
+loadHistory()
+
+</script>
+
+</body>
+
+</html>
