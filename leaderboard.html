@@ -191,8 +191,10 @@ const players =
    ? JSON.parse(team.players)
    : team.players
 
-const playerScores = players
-.map(p => scores[p]?.score ?? 0)
+const playerScores = players.map(p=>({
+ name:p,
+ score:scores?.[normalizeName(p)]?.score ?? 0
+}))
 
 playerScores.sort((a,b)=>a-b)
 
@@ -291,7 +293,9 @@ detailRow.style.display="none"
 const playerHtml = team.players.map(p=>{
 
 const counting =
- team.best4.some(b=>b.name===p.name)
+team.best4.some(
+ b => normalizeName(b.name) === normalizeName(p.name)
+)
 
 const scoreObj = scores[normalizeName(p.name)]
 
