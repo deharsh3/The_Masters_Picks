@@ -12,6 +12,10 @@ background:white;
 color:black;
 }
 
+thead{
+  text-align: left;
+}
+
 th,td{
 padding:10px;
 border-bottom:1px solid #ddd;
@@ -61,7 +65,7 @@ font-weight:bold;
 }
 
 .cutline{
-color:#0b3d0b;
+color:white;
 font-size:18px;
 margin-bottom:10px;
 font-weight:bold
@@ -172,14 +176,70 @@ font-weight:bold;
 /* The hero image */
 .hero-image {
 
-background-image: url("masters_banner.jpg")
+background-image: url("masters_banner.jpg");
 
   /* Set a specific height */
-  height: 50%;width: 100%;
+  height: 250px;width: 100%;
 
   /* Position and center the image to scale nicely on all screens */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
+}
+
+
+.oddsAccordion{
+background:white;
+color:black;
+padding:12px;
+border-radius:6px;
+margin-top:15px;
+}
+
+.oddsAccordion summary{
+cursor:pointer;
+font-weight:bold;
+color:#0b3d0b;
+}
+
+.oddsAccordion summary:hover{
+color:#083608;
+}
+
+.favorite,.mid,.longshot{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.leaderboardKey{
+background:white;
+color:black;
+padding:12px;
+border-radius:6px;
+margin-bottom:15px;
+max-width:520px;
+}
+
+.leaderboardKey summary{
+cursor:pointer;
+font-weight:bold;
+color:#0b3d0b;
+font-size:16px;
+}
+
+.leaderboardKey summary:hover{
+color:#083608;
+}
+
+.keyRow{
+display:flex;
+align-items:center;
+margin-top:6px;
+font-size:14px;
+}
+
+.keyIcon{
+width:28px;
+font-weight:bold;
 }

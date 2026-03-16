@@ -39,13 +39,13 @@
 <h3>How to Submit Your Masters Pool Picks</h3>
 
 <p>
-Select <b>6 golfers total</b> using the dropdown menus:
+Select <b>6 golfers total</b> using the selection menus:
 </p>
 
 <ul>
-<li><b>2 Favorites</b></li>
-<li><b>2 Mid-Tier players</b></li>
-<li><b>2 Longshots</b></li>
+<li><b>2 Favorites (Odds 0-35)</b></li>
+<li><b>2 Mid-Tier players (Odds 36-101)</b></li>
+<li><b>2 Longshots (Odds 102+)</b></li>
 </ul>
 
 <p>
@@ -73,6 +73,32 @@ If teams are tied, the tiebreaker will be determined by the
 This prevents teams from gaining an advantage by selecting extremely longshot players.
 </p>
 
+<details class="oddsAccordion">
+
+<summary><strong>Understanding the Odds</strong></summary>
+
+<p>
+Each player is assigned a number based on their betting odds to win the tournament.
+Lower numbers indicate players who are more favored to win, while higher numbers
+represent longer shots.
+</p>
+
+<p>
+For example, a player with odds of <strong>4.5</strong> is considered a strong favorite.
+This means that for every $1 wagered, the payout would be $4.50 if the player wins.
+Players with higher numbers such as 60 or 100 are much less likely to win according
+to sportsbooks.
+</p>
+
+<p>
+Odds are used only as a <strong>tiebreaker</strong> in this pool. If two teams finish with the
+same score, the winner will be the team whose five lowest-odds players have the
+<strong>highest average odds</strong>. This rewards teams that take slightly bigger risks rather
+than selecting only the strongest favorites.
+</p>
+
+</details>
+
 <p>
 Picks will lock when the tournament begins.
 </p>
@@ -90,13 +116,16 @@ id="lockCountdown"
 <br><br>
 
 <h2>Favorites (pick 2)</h2>
-<div id="favorite"></div>
+<div class="favorite"
+id="favorite"></div>
 
 <h2>Mid Tier (pick 2)</h2>
-<div id="mid"></div>
+<div class="mid"
+id="mid"></div>
 
 <h2>Longshots (pick 2)</h2>
-<div id="longshot"></div>
+<div class="longshot"
+id="longshot"></div>
 
 <br>
 

@@ -58,6 +58,42 @@ Click a team to see their players ▼
 <div class="cutline"
 id="cutline"></div>
 
+<details class="leaderboardKey">
+
+<summary><strong>Leaderboard Key</strong></summary>
+
+<div class="keyRow">
+<span class="keyIcon">🟢</span>
+<span>Player currently on the course</span>
+</div>
+
+<div class="keyRow">
+<span class="keyIcon">⚪</span>
+<span>Player finished their round</span>
+</div>
+
+<div class="keyRow">
+<span class="keyIcon">✔</span>
+<span>Score counting toward team total (best 4 of 6)</span>
+</div>
+
+<div class="keyRow">
+<span class="keyIcon">✖</span>
+<span>Score not currently counting</span>
+</div>
+
+<div class="keyRow">
+<span class="keyIcon">F</span>
+<span>Round finished</span>
+</div>
+
+<div class="keyRow">
+<span class="keyIcon">MC</span>
+<span>Player missed the cut</span>
+</div>
+
+</details>
+
 <div style="margin-bottom:10px;">
 <input 
 class="teamSearch"
@@ -148,9 +184,11 @@ Authorization:`Bearer ${API_KEY}`
 
 const data = await res.json()
 
+console.log("Leaderboard response:", data)
+
 scores = data.scores || {}
 
-if(data.cutLine){
+if(data.cutLine !== undefined && data.cutLine !== null){
 document.getElementById("cutline").innerText =
 "CUT LINE: " + data.cutLine
 }
