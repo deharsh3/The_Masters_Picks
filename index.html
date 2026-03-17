@@ -145,6 +145,9 @@ id="message"></div>
 const SUPABASE_FUNCTION =
 "https://pufdcfsgdabjtnxfxuat.functions.supabase.co/submitTeam"
 
+const UPDATE_ODDS_FUNCTION =
+"https://pufdcfsgdabjtnxfxuat.functions.supabase.co/updateOdds"
+
 const PLAYERS_ENDPOINT =
 "https://pufdcfsgdabjtnxfxuat.supabase.co/rest/v1/players?select=*"
 
@@ -158,6 +161,29 @@ let tierCounts={
 favorite:0,
 mid:0,
 longshot:0
+}
+
+async function ensurePlayersExist(){
+
+console.log("Checking players table")
+
+try{
+
+await fetch(UPDATE_ODDS_FUNCTION,{
+headers:{
+apikey:API_KEY,
+Authorization:`Bearer ${API_KEY}`
+}
+})
+
+console.log("updateOdds check completed")
+
+}catch(err){
+
+console.log("updateOdds call failed:",err)
+
+}
+
 }
 
 async function loadPlayers(){
@@ -338,13 +364,21 @@ el.innerText =
 
 }
 
-loadPlayers()
+async function init(){
+
+await ensurePlayersExist()
+
+await loadPlayers()
 
 applyPickLock()
 
 updateCountdown()
 
 setInterval(updateCountdown,60000)
+
+}
+
+init()
 
 </script>
 
