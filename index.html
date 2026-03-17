@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<title>Masters Pool</title>
+<title>PGA Pool</title>
 
 <link rel="stylesheet" href="styles.css">
 
@@ -32,11 +32,11 @@
 
 </div>
 
-<h1>Masters Pool</h1>
+<h1>PGA Pool</h1>
 
 <div class="instructions">
 
-<h3>How to Submit Your Masters Pool Picks</h3>
+<h3>How to Submit Your Golf Pool Picks</h3>
 
 <p>
 Select <b>6 golfers total</b> using the selection menus:
@@ -162,6 +162,8 @@ longshot:0
 
 async function loadPlayers(){
 
+console.log("Loading players...")
+
 const res = await fetch(PLAYERS_ENDPOINT,{
 headers:{
 apikey:API_KEY,
@@ -170,6 +172,8 @@ Authorization:`Bearer ${API_KEY}`
 })
 
 const players = await res.json()
+
+console.log(players)
 
 players.forEach(p=>{
 
@@ -231,7 +235,7 @@ const name=document
 const message=document.getElementById("message")
 
 if(picksLocked()){
-alert("Picks are now locked. The Masters tournament has begun.")
+alert("Picks are now locked. The tournament has begun.")
 return
 }
 
@@ -302,7 +306,7 @@ const lockMessage = document.createElement("div")
 
 lockMessage.innerHTML = `
 <div style="background:#FFD700;color:black;padding:12px;border-radius:6px;margin-bottom:20px;text-align:center;font-weight:bold">
-Picks are locked. The Masters tournament has started.
+Picks are locked. The tournament has started.
 </div>
 `
 
