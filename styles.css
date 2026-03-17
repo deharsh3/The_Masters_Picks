@@ -1,7 +1,23 @@
+:root{
+
+/* Primary tournament colors */
+--primary-color:#0b3d0b;
+--secondary-color:#083608;
+--accent-color:#FFD700;
+
+/* Text colors */
+--text-light:#ffffff;
+--text-dark:#000000;
+
+/* Hero image */
+--hero-image:url("masters_banner.jpg");
+
+}
+
 body{
 font-family:"EB Garamond", serif;
-background:#0b3d0b;
-color:white;
+background:var(--primary-color);
+color:var(--text-light);
 padding:20px;
 }
 
@@ -37,13 +53,13 @@ margin:auto;
 #navbar{
 display:flex;
 gap:20px;
-background:#083608;
+background:var(--secondary-color);
 padding:12px;
 margin-bottom:20px;
 }
 
 #navbar a{
-color:#FFD700;
+color:var(--accent-color);
 text-decoration:none;
 font-weight:bold;
 font-size:16px;
@@ -104,7 +120,7 @@ color:#ddd;
 
 .refreshSpinner{
 margin-left:10px;
-color:#FFD700;
+color:var(--accent-color);
 font-weight:bold;
 display:none;
 }
@@ -135,7 +151,7 @@ margin-top:10px;
 }
 
 .selected{
-background:gold;
+background:var(--accent-color);
 }
 
 button{
@@ -165,7 +181,7 @@ margin-bottom:20px;
 text-align:center;
 margin-bottom:15px;
 font-weight:bold;
-color:#FFD700;
+color:var(--accent-color);
 }
 
 .message{
@@ -174,18 +190,18 @@ font-weight:bold;
 }
 
 /* The hero image */
-.hero-image {
+.hero-image{
 
-background-image: url("masters_banner.jpg");
+background-image:var(--hero-image);
 
-  /* Set a specific height */
-  height: 250px;width: 100%;
+height:250px;
+width:100%;
 
-  /* Position and center the image to scale nicely on all screens */
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  position: relative;
+background-position:center;
+background-repeat:no-repeat;
+background-size:cover;
+position:relative;
+
 }
 
 
@@ -242,4 +258,24 @@ font-size:14px;
 .keyIcon{
 width:28px;
 font-weight:bold;
+}
+
+body.valspar{
+
+--primary-color:#004f7c;
+--secondary-color:#00395a;
+--accent-color:#00a3e0;
+
+--hero-image:url("valspar_banner.jfif");
+
+}
+
+body.masters{
+
+--primary-color:#0b3d0b;
+--secondary-color:#083608;
+--accent-color:#FFD700;
+
+--hero-image:url("masters_banner.jpg");
+
 }
