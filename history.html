@@ -12,21 +12,11 @@
 
 </head>
 
-<body class="valspar">
+<body>
 
 <div id="header">
 
-<img src="masters_logo.jfif" alt="Masters Pool Logo">
-
-</div>
-
-<div id="navbar">
-
-<a href="index.html">Submit Picks</a>
-
-<a href="teams.html">View Teams</a>
-
-<a href="leaderboard.html">Leaderboard</a>
+<div class="hero-image"></div>
 
 </div>
 
@@ -51,12 +41,9 @@ id ="refreshSpinner">⏳ Updating...</span>
 Click a team to see their players ▼
 </div>
 
-<h1>Masters Pool Leaderboard</h1>
+<h1>Pool Leaderboard</h1>
 
 <h2 id="poolTitle"></h2>
-
-<div class="cutline"
-id="cutline"></div>
 
 <div style="margin-bottom:10px;">
 <input 
@@ -85,55 +72,24 @@ onkeyup="filterTeams()"
 </table>
 
 <script>
-
-const API_KEY = "YOUR_KEY"
+const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1ZmRjZnNnZGFianRueGZ4dWF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjA0MDIsImV4cCI6MjA4OTAzNjQwMn0.p8BiiUN6uHOcVQVDEOEAgc-B4ZsyLQtDqsIZ-tnu63c"
 
 const RESULTS_ENDPOINT =
 "https://pufdcfsgdabjtnxfxuat.supabase.co/rest/v1/pool_results?select=*"
 
-function toTitleCase(name){
+let results = []
+
+function normalizeName(name){
 return name
-.split(" ")
-.map(w => w.charAt(0).toUpperCase() + w.slice(1))
-.join(" ")
+.normalize("NFD")
+.replace(/[\u0300-\u036f]/g,"")
+.toLowerCase()
+.trim()
 }
 
-
-function populateDropdown(){
-
-const selector = document.getElementById("poolSelector")
-
-selector.innerHTML=""
-
-pools.forEach((pool,i)=>{
-
-const option = document.createElement("option")
-
-option.value = pool.id
-option.textContent =
-`${pool.year} ${pool.pool_name}`
-
-selector.appendChild(option)
-
-})
-
+function titleCase(name){
+return name.replace(/\b\w/g,c=>c.toUpperCase())
 }
-
-function changePool(){
-
-const selector = document.getElementById("poolSelector")
-
-const index = selector.value
-
-const pool = pools.find(p => p.id == selector.value)
-document.getElementById("poolTitle").innerText =
-`${pool.year} ${pool.pool_name}`
-
-renderLeaderboard(pool.leaderboard)
-
-}
-
-let pools = []
 
 async function loadHistory(){
 
@@ -144,11 +100,65 @@ Authorization:`Bearer ${API_KEY}`
 }
 })
 
-pools = await res.json()
+results = await res.json()
+
+// sort newest tournaments first
+results.sort((a,b)=>
+new Date(b.created_at) - new Date(a.created_at)
+)
 
 populateDropdown()
 
-renderLeaderboard(pools[0].leaderboard)
+if(results.length){
+loadPool(results[0].id)
+}
+
+}
+
+function populateDropdown(){
+
+const selector = document.getElementById("poolSelector")
+
+selector.innerHTML=""
+
+results.forEach(r=>{
+
+const option = document.createElement("option")
+
+option.value = r.id
+
+option.textContent =
+`${r.year} ${r.tournament_name} — ${r.pool_name}`
+
+selector.appendChild(option)
+
+})
+
+}
+
+function changePool(){
+
+const id = document.getElementById("poolSelector").value
+
+loadPool(id)
+
+}
+
+function loadPool(id){
+
+const row = results.find(r => r.id == id)
+
+document.getElementById("poolTitle").innerText =
+`${row.year} ${row.tournament_name} — ${row.pool_name}`
+
+let leaderboard = row.leaderboard
+
+// handle JSONB string response
+if(typeof leaderboard === "string"){
+leaderboard = JSON.parse(leaderboard)
+}
+
+renderLeaderboard(leaderboard)
 
 }
 
@@ -183,17 +193,21 @@ ${medal}${team.name}
 tbody.appendChild(row)
 
 const detailRow=document.createElement("tr")
+
 detailRow.style.display="none"
 
 const playerHtml = team.players.map(p=>{
 
-const counting = team.best4.includes(p.name)
+const counting =
+team.best4.some(b =>
+normalizeName(b.name) === normalizeName(p.name)
+)
 
 return `
 <div style="display:flex;justify-content:space-between">
 
 <span>
-${counting ? "✔" : "✖"} ${toTitleCase(p.name)}
+${counting ? "✔" : "✖"} ${titleCase(p.name)}
 </span>
 
 <span ${counting?'style="font-weight:bold"':''}>
