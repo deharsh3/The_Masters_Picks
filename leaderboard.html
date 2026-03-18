@@ -239,11 +239,10 @@ return name
 .trim()
 }
 
-function toTitleCase(name){
-return name
-.split(" ")
-.map(w => w.charAt(0).toUpperCase() + w.slice(1))
-.join(" ")
+function titleCase(name){
+
+return name.replace(/\b\w/g, c => c.toUpperCase())
+
 }
 
 async function init(){
@@ -388,7 +387,7 @@ if(score > 0) scoreColor = "#555"
 const statusIcon =
  complete
  ? "⚪"
- : hole
+ : hole !== null
  ? "🟢"
  : ""
 
@@ -408,7 +407,7 @@ ${scores[normalizeName(p.name)]?.madeCut === false ? " MC" : ""}
 
 ${complete ? " F" : ""}
 
-${hole ? " (Thru " + hole + ")" : ""}
+${hole !== null ? " (Thru " + hole + ")" : ""}
 
 </span>
 
