@@ -53,7 +53,7 @@ id ="refreshSpinner">⏳ Updating...</span>
 Click a team to see their players ▼
 </div>
 
-<h1>Pool Leaderboard</h1>
+<h1 id="leaderboardTitle">Pool Leaderboard</h1>
 
 <div class="cutline"
 id="cutline"></div>
@@ -132,12 +132,11 @@ window.location.href="pool.html"
 
 })
 
-const params = new URLSearchParams(window.location.search)
+const pool = localStorage.getItem("pool")
 
-const poolParam = params.get("pool")
-
-if(poolParam){
-localStorage.setItem("pool",poolParam)
+if(pool){
+document.getElementById("leaderboardTitle").innerText =
+"Pool Leaderboard: " + pool
 }
 
 const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1ZmRjZnNnZGFianRueGZ4dWF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjA0MDIsImV4cCI6MjA4OTAzNjQwMn0.p8BiiUN6uHOcVQVDEOEAgc-B4ZsyLQtDqsIZ-tnu63c"

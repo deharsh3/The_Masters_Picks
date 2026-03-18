@@ -32,7 +32,7 @@
 
 </div>
 
-<h1>PGA Pool</h1>
+<h1 id="poolTitle">PGA Pool</h1>
 
 <div class="instructions">
 
@@ -156,6 +156,13 @@ window.location.href="pool.html"
 }
 
 })
+
+const pool = localStorage.getItem("pool")
+
+if(pool){
+document.getElementById("poolTitle").innerText =
+"PGA Pool — " + pool
+}
 
 const params = new URLSearchParams(window.location.search)
 
