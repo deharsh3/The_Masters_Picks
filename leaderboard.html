@@ -117,6 +117,18 @@ onkeyup="filterTeams()"
 
 <script>
 
+if(!localStorage.getItem("pool")){
+window.location.href="pool.html"
+}
+
+const params = new URLSearchParams(window.location.search)
+
+const poolParam = params.get("pool")
+
+if(poolParam){
+localStorage.setItem("pool",poolParam)
+}
+
 const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1ZmRjZnNnZGFianRueGZ4dWF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjA0MDIsImV4cCI6MjA4OTAzNjQwMn0.p8BiiUN6uHOcVQVDEOEAgc-B4ZsyLQtDqsIZ-tnu63c"
 
 const TEAMS_ENDPOINT =
@@ -134,7 +146,11 @@ let teams=[]
 
 async function loadTeams(){
 
-const res = await fetch(TEAMS_ENDPOINT,{
+const pool = localStorage.getItem("pool")
+
+const res = await fetch(
+`${TEAMS_ENDPOINT}&pool_name=eq.${pool}`,
+{
 headers:{
 apikey:API_KEY,
 Authorization:`Bearer ${API_KEY}`

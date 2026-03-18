@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Enter Pool</title>
+</head>
+
+<body>
+
+<h2>Enter Your Pool Code</h2>
+
+<input id="poolInput" placeholder="Pool name">
+
+<button onclick="enterPool()">Enter Pool</button>
+
+<script>
+
+function enterPool(){
+
+const pool =
+document.getElementById("poolInput")
+.value
+.trim()
+.toLowerCase()
+
+if(!pool){
+alert("Please enter a pool name")
+return
+}
+
+localStorage.setItem("pool",pool)
+
+window.location.href="index.html"
+
+}
+
+const params = new URLSearchParams(window.location.search)
+
+const poolParam = params.get("pool")
+
+if(poolParam){
+localStorage.setItem("pool",poolParam)
+}
+
+</script>
+
+</body>
+
+</html>
