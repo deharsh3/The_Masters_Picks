@@ -104,12 +104,12 @@ const div=document.createElement("div")
 
 div.className="team"
 
-const players = Array.isArray(team.players)
-  ? team.players
-  : JSON.parse(team.players)
+const players = Array.isArray(team.players_display)
+  ? team.players_display
+  : JSON.parse(team.players_display)
 
 const playersHTML = players
-.map(p=>`<li>${p}</li>`)
+.map(p=>`<li>${titleCase(p.name)} (${p.odds})</li>`)
 .join("")
 
 div.innerHTML=`
@@ -143,6 +143,12 @@ expanded ? "none" : "block"
 
 arrow.textContent =
 expanded ? "▶" : "▼"
+
+}
+
+function titleCase(name){
+
+return name.replace(/\b\w/g, c => c.toUpperCase())
 
 }
 
