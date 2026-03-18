@@ -117,9 +117,20 @@ onkeyup="filterTeams()"
 
 <script>
 
+document.addEventListener("DOMContentLoaded", () => {
+
+const params = new URLSearchParams(window.location.search)
+const poolParam = params.get("pool")
+
+if(poolParam){
+localStorage.setItem("pool", poolParam)
+}
+
 if(!localStorage.getItem("pool")){
 window.location.href="pool.html"
 }
+
+})
 
 const params = new URLSearchParams(window.location.search)
 
