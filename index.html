@@ -28,6 +28,8 @@
 
 <a href="teams.html">View Teams</a>
 
+<a href="tournament.html">Tournament Leaderboard</a>
+
 <a href="leaderboard.html">Leaderboard</a>
 
 </div>
@@ -235,7 +237,7 @@ players.forEach(p=>{
 
 const btn=document.createElement("button")
 
-btn.innerText=p.name+" ("+p.odds+")"
+btn.innerText = titleCase(p.name) + " (" + p.odds + ")"
 
 btn.className="player"
 
@@ -392,6 +394,12 @@ const minutes = Math.floor((diff / (1000*60)) % 60)
 
 el.innerText =
 `Picks lock in: ${days}d ${hours}h ${minutes}m`
+
+}
+
+function titleCase(name){
+
+return name.replace(/\b\w/g, c => c.toUpperCase())
 
 }
 

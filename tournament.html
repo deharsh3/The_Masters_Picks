@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PGA Tournament Leaderboard</title>
+
+<link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body class="pga">
+
+<div class="hero-image"></div>
+
+<!-- NAVBAR -->
+<div id="navbar">
+
+<a href="index.html">Submit Picks</a>
+<a href="teams.html">View Teams</a>
+<a href="leaderboard.html">Pool Leaderboard</a>
+<a href="tournament.html">Tournament Leaderboard</a>
+<a href="history.html">History</a>
+
+</div>
+
+<!-- HEADER -->
+<h1 id="title">Tournament Leaderboard</h1>
+
+<div id="updateInfo">
+Last updated: <span id="lastUpdated">--</span>
+</div>
+
+<table id="leaderboard">
+
+<thead>
+<tr>
+<th>#</th>
+<th>Player</th>
+<th>Score</th>
+<th>Thru</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+<script>
+
+const API_KEY = "YOUR_API_KEY"
+
+const LEADERBOARD_ENDPOINT =
+"https://pufdcfsgdabjtnxfxuat.supabase.co/rest/v1/tournament_leaderboard?select=*"
+
+const TOURN_ID = "475" // keep consistent with your getLeaderboard
+
+function titleCase(name){
+return name.replace(/\b\w/g,c=>c.toUpperCase())
+}
+
+async function loadLeaderboard(){
+
+const res = await fetch(
+`${LEADERBOARD_ENDPOINT}&tourn_id=eq.${TOURN_ID}`,
+{
+headers:{
+apikey:API_KEY,
+Authorization:`Bearer ${API_KEY}`
+}
+}
+)
+
+const data = await res.json()
+
+if(!data.length){
+document.getElementById("title").innerText =
+"No leaderboard data available"
+return
+}
+
+const row = data[0]
+
+let players = row.leaderboard
+
+// handle JSONB
+if(typeof players === "string"){
+players = JSON.parse(players)
+}
+
+// set title
+document.getElementById("title").innerText =
+`${row.tournament_name} Leaderboard`
+
+// set updated time
+document.getElementById("lastUpdated").innerText =
+new Date(row.updated_at).toLocaleString()
+
+renderLeaderboard(players)
+
+}
+
+function renderLeaderboard(players){
+
+const tbody = document.querySelector("#leaderboard tbody")
+tbody.innerHTML=""
+
+players.forEach((p,i)=>{
+
+const row = document.createElement("tr")
+
+let scoreDisplay = p.score ?? ""
+let thruDisplay = p.hole ?? ""
+
+if(p.hole === 18){
+thruDisplay = "F"
+}
+
+let scoreColor = "#000"
+
+if(p.score < 0) scoreColor = "red"
+if(p.score > 0) scoreColor = "#555"
+
+row.innerHTML = `
+<td>${i+1}</td>
+
+<td>${titleCase(p.name)}</td>
+
+<td style="color:${scoreColor}">
+${scoreDisplay}
+</td>
+
+<td>${thruDisplay}</td>
+`
+
+tbody.appendChild(row)
+
+})
+
+}
+
+loadLeaderboard()
+
+</script>
+
+</body>
+</html>
