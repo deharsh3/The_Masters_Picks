@@ -96,7 +96,8 @@ document.getElementById("title").innerText =
 
 // set updated time
 document.getElementById("lastUpdated").innerText =
-new Date(row.updated_at).toLocaleString()
+"Last Updated: " +
+now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
 
 renderLeaderboard(players)
 
