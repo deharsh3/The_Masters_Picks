@@ -11,11 +11,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 
 <body class="valspar">
 
-<div id="header">
+<div class="header" 
+id="header">
 
 <div class="hero-image">
 
@@ -23,21 +26,21 @@
 
 </div>
 
-<div id="navbar">
+<div class="navbar"
+id="navbar">
+  <div id="hamburger">☰</div>
 
-<a href="index.html">Submit Picks</a>
-
-<a href="teams.html">View Teams</a>
-
-<a href="tournament.html">PGA Tournament Leaderboard</a>
-
-<a href="leaderboard.html">Pool Leaderboard</a>
-
+  <div id="navMenu">
+    <a href="index.html">Submit Picks</a>
+    <a href="teams.html">View Teams</a>
+    <a href="tournament.html">Tournament</a>
+    <a href="leaderboard.html">Leaderboard</a>
+  </div>
 </div>
 
 <h1>Submitted Teams</h1>
 
-<div style="margin-bottom:10px;">
+<div class="search-container">
 <input
 class="teamSearch"
 id="teamSearch"
@@ -183,5 +186,18 @@ loadTeams()
 </script>
 
 </body>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const hamburger = document.getElementById("hamburger");
+  const navMenu = document.getElementById("navMenu");
+
+  if(hamburger){
+    hamburger.addEventListener("click", () => {
+      navMenu.classList.toggle("active");
+    });
+  }
+});
+</script>
 
 </html>

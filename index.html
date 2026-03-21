@@ -10,11 +10,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 
 <body class="valspar">
 
-<div id="header">
+<div class="header"
+id="header">
 
 <div class="hero-image">
 
@@ -22,23 +25,27 @@
 
 </div>
 
-<div id="navbar">
+<div class="class"
+id="navbar">
+  <div id="hamburger">☰</div>
 
-<a href="index.html">Submit Picks</a>
-
-<a href="teams.html">View Teams</a>
-
-<a href="tournament.html">PGA Tournament Leaderboard</a>
-
-<a href="leaderboard.html">Pool Leaderboard</a>
-
+  <div id="navMenu">
+    <a href="index.html">Submit Picks</a>
+    <a href="teams.html">View Teams</a>
+    <a href="tournament.html">Tournament</a>
+    <a href="leaderboard.html">Leaderboard</a>
+  </div>
 </div>
 
 <h1 id="poolTitle">PGA Pool</h1>
 
 <div class="instructions">
 
-<h3>How to Submit Your Golf Pool Picks</h3>
+<h3><strong>Team Selection Instructions</strong></h3>
+
+<details class="oddsAccordion">
+
+<summary>How to Submit Your Golf Pool Picks</summary>
 
 <p>
 Select <b>6 golfers total</b> using the selection menus:
@@ -63,21 +70,11 @@ Simply submit a new team using <b>the exact same name</b>. Your newest submissio
 You can view all submitted teams on the <b>View Teams</b> page to confirm your picks or make sure your changes were saved correctly.
 </p>
 
-<h3>Tournament Scoring</h3>
-
-<p>
-Each team's score is calculated using the <b>best 4 scores out of your 6 golfers</b>.
-</p>
-
-<p>
-If teams are tied, the tiebreaker will be determined by the 
-<b>highest average betting odds of the 5 lowest-odds players on the roster</b>.  
-This prevents teams from gaining an advantage by selecting extremely longshot players.
-</p>
+</details>
 
 <details class="oddsAccordion">
 
-<summary><strong>Understanding the Odds</strong></summary>
+<summary>Understanding the Odds</summary>
 
 <p>
 Players are grouped into tiers based on their <b>Official World Golf Ranking</b>.
@@ -106,6 +103,18 @@ than selecting only the strongest favorites.
 </p>
 
 </details>
+
+<h3>Tournament Scoring</h3>
+
+<p>
+Each team's score is calculated using the <b>best 4 scores out of your 6 golfers</b>.
+</p>
+
+<p>
+If teams are tied, the tiebreaker will be determined by the 
+<b>highest average betting odds of the 5 lowest-odds players on the roster</b>.  
+This prevents teams from gaining an advantage by selecting extremely longshot players.
+</p>
 
 <p>
 Picks will lock when the tournament begins.
@@ -422,5 +431,18 @@ init()
 </script>
 
 </body>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const hamburger = document.getElementById("hamburger");
+  const navMenu = document.getElementById("navMenu");
+
+  if(hamburger){
+    hamburger.addEventListener("click", () => {
+      navMenu.classList.toggle("active");
+    });
+  }
+});
+</script>
 
 </html>

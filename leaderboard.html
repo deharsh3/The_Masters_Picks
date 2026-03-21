@@ -10,11 +10,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 
 <body class="valspar">
 
-<div id="header">
+<div class="header"
+id="header">
 
 <div class="hero-image">
 
@@ -22,27 +25,22 @@
 
 </div>
 
-<div id="navbar">
+<div class="navbar"
+id="navbar">
+  <div id="hamburger">☰</div>
 
-<a href="index.html">Submit Picks</a>
-
-<a href="teams.html">View Teams</a>
-
-<a href="tournament.html">PGA Tournament Leaderboard</a>
-
-<a href="leaderboard.html">Pool Leaderboard</a>
-
+  <div id="navMenu">
+    <a href="index.html">Submit Picks</a>
+    <a href="teams.html">View Teams</a>
+    <a href="tournament.html">Tournament</a>
+    <a href="leaderboard.html">Leaderboard</a>
+  </div>
 </div>
 
-<div id="tournamentInfo">
+<h1 id="leaderboardTitle">Pool Leaderboard</h1>
 
-<div id="tournamentStatus">
-Live Tournament Scores
-</div>
-
-</div>
-
-<div id="updateInfo">
+<div class="updateInfo"
+id="updateInfo">
 
 <span id="lastUpdated">Last Updated: --</span>
 
@@ -50,12 +48,6 @@ Live Tournament Scores
 id ="refreshSpinner">⏳ Updating...</span>
 
 </div>
-
-<div id="expandNote">
-Click a team to see their players ▼
-</div>
-
-<h1 id="leaderboardTitle">Pool Leaderboard</h1>
 
 <div class="cutline"
 id="cutline"></div>
@@ -96,7 +88,7 @@ id="cutline"></div>
 
 </details>
 
-<div style="margin-bottom:10px;">
+<div class="search-container">
 <input 
 class="teamSearch"
 id="teamSearch"
@@ -104,6 +96,10 @@ type="text"
 placeholder="Search for your team..."
 onkeyup="filterTeams()"
 >
+<div class="expandNote"
+id="expandNote">
+Click a team to see their players ▼
+</div>
 </div>
 
 <table id="leaderboard">
@@ -344,7 +340,7 @@ if(i===2) medal = "🥉 "
 row.innerHTML=`
 <td>${i+1}</td>
 
-<td style="cursor:pointer;font-weight:${i<3?'bold':'normal'}">
+<td class="team-row ${i < 3 ? 'top-team' : ''}">
 
 <span class="arrow">▶</span>
 ${medal}${team.name}
@@ -394,7 +390,7 @@ const statusIcon =
  : ""
 
 return `
-<div style="display:flex;justify-content:space-between">
+<div class="player-row">
 
 <span style="${missedCut?'color:#999;text-decoration:line-through':''}">
 ${counting ? "✔" : "✖"} ${statusIcon} ${titleCase(p.name)}
@@ -492,6 +488,19 @@ renderLeaderboard()
 
 }
 
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const hamburger = document.getElementById("hamburger");
+  const navMenu = document.getElementById("navMenu");
+
+  if(hamburger){
+    hamburger.addEventListener("click", () => {
+      navMenu.classList.toggle("active");
+    });
+  }
+});
 </script>
 
 </body>

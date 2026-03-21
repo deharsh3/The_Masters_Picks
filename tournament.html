@@ -2,36 +2,52 @@
 <html lang="en">
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>PGA Tournament Leaderboard</title>
 
 <link rel="stylesheet" href="styles.css">
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
+
+<script>
+const hamburger = document.getElementById("hamburger");
+const navMenu = document.getElementById("navMenu");
+const overlay = document.getElementById("overlay");
+
+hamburger.addEventListener("click", () => {
+  navMenu.classList.toggle("active");
+  overlay.classList.toggle("active");
+});
+
+overlay.addEventListener("click", () => {
+  navMenu.classList.remove("active");
+  overlay.classList.remove("active");
+});
+</script>
 
 <body class="valspar">
 
 <div class="hero-image"></div>
 
 <!-- NAVBAR -->
-<div id="navbar">
+<div class="navbar"
+id="navbar">
+  <div id="hamburger">☰</div>
 
-<a href="index.html">Submit Picks</a>
-
-<a href="teams.html">View Teams</a>
-
-<a href="tournament.html">PGA Tournament Leaderboard</a>
-
-<a href="leaderboard.html">Pool Leaderboard</a>
-
+  <div id="navMenu">
+    <a href="index.html">Submit Picks</a>
+    <a href="teams.html">View Teams</a>
+    <a href="tournament.html">Tournament</a>
+    <a href="leaderboard.html">Leaderboard</a>
+  </div>
 </div>
 
 <!-- HEADER -->
 <h1 id="title">Tournament Leaderboard</h1>
 
-<div id="updateInfo">
+<div class="updateInfo"
+id="updateInfo">
 Last updated: <span id="lastUpdated">--</span>
 </div>
 
@@ -161,6 +177,19 @@ tbody.appendChild(row)
 
 loadLeaderboard()
 
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const hamburger = document.getElementById("hamburger");
+  const navMenu = document.getElementById("navMenu");
+
+  if(hamburger){
+    hamburger.addEventListener("click", () => {
+      navMenu.classList.toggle("active");
+    });
+  }
+});
 </script>
 
 </body>
