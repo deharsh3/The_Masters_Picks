@@ -298,7 +298,8 @@ function renderLeaderboard(){
 const tbody = document.querySelector("#leaderboard tbody")
 tbody.innerHTML=""
 
-teams
+// BUILD + SORT FIRST
+const rankedTeams = teams
 .map(team=>{
 
 const players = team.players
@@ -332,7 +333,12 @@ return a.total - b.total
 return b.tiebreaker - a.tiebreaker
 
 })
-.forEach((team,i)=>{
+
+// GET LEADER SCORE
+const firstPlaceScore = rankedTeams[0]?.total ?? 0
+
+// RENDER
+rankedTeams.forEach((team,i)=>{
 
 const row=document.createElement("tr")
 
@@ -342,6 +348,14 @@ if(i===0) medal = "🥇 "
 if(i===1) medal = "🥈 "
 if(i===2) medal = "🥉 "
 
+// CALCULATE SHOTS BACK
+const shotsBack = team.total - firstPlaceScore
+
+const shotsBackText =
+ shotsBack === 0
+  ? "Leader"
+  : `${shotsBack} ${shotsBack === 1 ? "shot" : "shots"} back`
+
 row.innerHTML=`
 <td>${i+1}</td>
 
@@ -350,13 +364,17 @@ row.innerHTML=`
 <span class="arrow">▶</span>
 ${medal}${team.name}
 
-<div class = "tiebreaker">
+<div class="tiebreaker">
 Tiebreaker (avg of 5 lowest odds): ${team.tiebreaker.toFixed(1)}
 </div>
 
 </td>
 
-<td>${team.total}</td>
+<td>${team.total}
+<div class="tiebreaker">
+${shotsBackText}
+</div>
+</td>
 `
 
 tbody.appendChild(row)
@@ -364,8 +382,6 @@ tbody.appendChild(row)
 const detailRow=document.createElement("tr")
 
 detailRow.style.display="none"
-
-
 
 const playerHtml = team.players.map(p=>{
 
