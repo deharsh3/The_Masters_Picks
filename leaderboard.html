@@ -52,6 +52,20 @@ id ="refreshSpinner">⏳ Updating...</span>
 <div class="cutline"
 id="cutline"></div>
 
+<div class="search-container">
+<input 
+class="teamSearch"
+id="teamSearch"
+type="text"
+placeholder="Search for your team..."
+onkeyup="filterTeams()"
+>
+<div class="expandNote"
+id="expandNote">
+Click a team to see their players ▼
+</div>
+</div>
+
 <details class="leaderboardKey">
 
 <summary><strong>Leaderboard Key</strong></summary>
@@ -87,20 +101,6 @@ id="cutline"></div>
 </div>
 
 </details>
-
-<div class="search-container">
-<input 
-class="teamSearch"
-id="teamSearch"
-type="text"
-placeholder="Search for your team..."
-onkeyup="filterTeams()"
->
-<div class="expandNote"
-id="expandNote">
-Click a team to see their players ▼
-</div>
-</div>
 
 <table id="leaderboard">
 <thead>
