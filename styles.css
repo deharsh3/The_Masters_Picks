@@ -55,6 +55,10 @@ body{
   margin-bottom:10px;
 }
 
+h1{
+  text-align: center; 
+}
+
 /* NAVBAR */
 .navbar{
   display:flex;
@@ -80,13 +84,16 @@ body{
   height:100%;
   width:260px;
 
-  transform: translateX(100%);   /* FULLY off screen */
-  transition: transform 0.3s ease;
+  box-sizing:border-box;
+
+  transform:translateX(100%);
+  transition:transform 0.3s ease;
 
   background:var(--secondary-color);
   display:flex;
   flex-direction:column;
   padding:70px 20px;
+
   z-index:1000;
 }
 
@@ -100,7 +107,6 @@ body{
 
 #navMenu a{
   display:block;
-  width:100%;
   padding:14px;
   margin-bottom:8px;
 
@@ -175,7 +181,7 @@ body{
 }
 
 .updateInfo{
-  text-align:center;
+  text-align:left;
   font-size:12px;
   margin-bottom:10px;
   color:#ddd;
@@ -229,19 +235,19 @@ th, td{
 
 /* SEARCH */
 .search-container{
-  margin:10px;
-  flex-direction: row;
+  margin:10px 0;
+  flex-direction: column-reverse;
   display: flex;
-  align-content: center;
+  align-content: left;
+  justify-content: left;
 }
 
 .expandNote{
-  padding: 4px 16px;
+  padding: 4px 0;
 }
 
 .teamSearch{
   padding:8px;
-  width:100%;
   border-radius:4px;
   border:none;
 }
@@ -318,6 +324,14 @@ button{
 
   .menu-header{
     display: none;
+  }
+
+  .search-container{
+    flex-direction: row;
+  }
+
+  .expandNote{
+    padding: 4px 16px;
   }
 
   #navMenu{
