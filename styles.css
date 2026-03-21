@@ -170,7 +170,7 @@ h1{
   color:black;
   padding:12px;
   border-radius:6px;
-  margin: 10px 0;
+  margin-bottom: 10px;
 }
 
 /* TEXT ELEMENTS */
@@ -237,6 +237,7 @@ th, td{
   display: flex;
   align-content: left;
   justify-content: left;
+  margin-bottom: 10px;
 }
 
 .expandNote{
