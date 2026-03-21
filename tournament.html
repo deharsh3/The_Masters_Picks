@@ -52,6 +52,21 @@ Last updated: <span id="lastUpdated">--</span>
 
 <script>
 
+document.addEventListener("DOMContentLoaded", () => {
+
+const params = new URLSearchParams(window.location.search)
+const poolParam = params.get("pool")
+
+if(poolParam){
+localStorage.setItem("pool", poolParam)
+}
+
+if(!localStorage.getItem("pool")){
+window.location.href="pool.html"
+}
+
+})
+
 const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1ZmRjZnNnZGFianRueGZ4dWF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjA0MDIsImV4cCI6MjA4OTAzNjQwMn0.p8BiiUN6uHOcVQVDEOEAgc-B4ZsyLQtDqsIZ-tnu63c"
 
 const FULL_LEADERBOARD_ENDPOINT =
@@ -93,6 +108,8 @@ players = JSON.parse(players)
 // set title
 document.getElementById("title").innerText =
 `${row.tournament_name} Leaderboard`
+
+const now = new Date()
 
 // set updated time
 document.getElementById("lastUpdated").innerText =
