@@ -315,7 +315,7 @@ const total =
  best4.reduce((a,b)=>a+b.score,0)
 
 return{
- name:team.name,
+ name:titleCase(team.name),
  players:playerScores,
  best4,
  total,
