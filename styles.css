@@ -63,19 +63,8 @@ body{
   background:var(--secondary-color);
   padding:12px;
   position:relative;
+  margin-bottom:20px;
 }
-
-#navbar{
-display:flex;
-gap:20px;
-background:var(--secondary-color);
-padding:12px;
-margin-bottom:20px;
-align-items:center;
-justify-content:space-between;
-position:relative;
-}
-
 
 #hamburger{
   font-size:26px;
@@ -87,15 +76,22 @@ position:relative;
 #navMenu{
   position:fixed;
   top:0;
-  right:-260px;
+  right:0;
   height:100%;
   width:260px;
+
+  transform: translateX(100%);   /* FULLY off screen */
+  transition: transform 0.3s ease;
+
   background:var(--secondary-color);
   display:flex;
   flex-direction:column;
   padding:70px 20px;
-  transition:right 0.3s ease;
   z-index:1000;
+}
+
+#navMenu.active{
+  transform: translateX(0);
 }
 
 #navMenu.active{
@@ -103,19 +99,72 @@ position:relative;
 }
 
 #navMenu a{
-  padding:14px 0;
+  display:block;
+  width:100%;
+  padding:14px;
+  margin-bottom:8px;
+
+  border-radius:6px;
+  text-decoration:none;
+
+  background:rgba(255,255,255,0.05);
   color:var(--accent-color);
-  font-size:18px;
+
+  transition:all 0.2s ease;
+}
+
+#navMenu a:hover{
+  background:rgba(255,255,255,0.15);
+  color:var(--text-light);
+  transform:translateX(4px);
+}
+
+.menu-header{
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:20px;
+  color:var(--text-light);
+}
+
+.closeMenu{
+  position:absolute;
+  top:15px;
+  right:15px;
+  font-size:22px;
+  cursor:pointer;
+  color:var(--accent-color);
+}
+
+#overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+  display:none;
+  z-index:999;
+}
+
+#overlay.active{
+  display:block;
 }
 
 /* CONTENT BLOCKS */
 .instructions,
-.leaderboardKey,
 .oddsAccordion{
   background:white;
   color:black;
   padding:12px;
   border-radius:6px;
+}
+
+.leaderboardKey{
+  background:white;
+  color:black;
+  padding:12px;
+  border-radius:6px;
+  margin-bottom: 10px;
 }
 
 /* TEXT ELEMENTS */
@@ -245,10 +294,9 @@ button{
 .oddsAccordion summary,
 .leaderboardKey summary{
   cursor:pointer;
-  color: black;
+  color: var(--text-dark);;
 }
 
-/* DESKTOP */
 @media (min-width:768px){
 
   body{
@@ -260,9 +308,16 @@ button{
     height:250px;
   }
 
-  /* NAVBAR DESKTOP */
   #hamburger{
     display:none;
+  }
+
+  .closeMenu{
+    display: none;
+  }
+
+  .menu-header{
+    display: none;
   }
 
   #navMenu{
@@ -271,23 +326,31 @@ button{
     height:auto;
     width:100%;
     padding:0;
-    display:flex;
-    justify-content:space-between;
+    display: flex;
+    justify-content: space-between;
     align-items:center;
+    transform:none; /* 🔥 IMPORTANT */
   }
+
+  #navMenu a:hover{
+    background:none;
+    text-decoration:underline;
   }
 
   #navMenu a{
-    padding:0;
+    margin: 0;
+    width: auto;
     font-size:16px;
+    background:none;
+    flex:1;
+    text-align: center;
+    padding: 8px 0;
   }
 
-  /* TABLES */
   th, td{
     padding:10px;
   }
 
-  /* SEARCH */
   .teamSearch{
     width:250px;
   }

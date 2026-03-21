@@ -30,12 +30,16 @@ id="navbar">
   <div id="hamburger">☰</div>
 
   <div id="navMenu">
+    <div class="closeMenu">✕</div>
+    <div class="menu-header">Menu</div>
     <a href="index.html">Submit Picks</a>
     <a href="teams.html">View Teams</a>
     <a href="tournament.html">Tournament</a>
     <a href="leaderboard.html">Leaderboard</a>
   </div>
 </div>
+
+<div id="overlay"></div>
 
 <h1 id="leaderboardTitle">Pool Leaderboard</h1>
 
@@ -494,12 +498,23 @@ renderLeaderboard()
 document.addEventListener("DOMContentLoaded", () => {
   const hamburger = document.getElementById("hamburger");
   const navMenu = document.getElementById("navMenu");
+  const overlay = document.getElementById("overlay");
+  const closeMenu = document.getElementById("closeMenu");
 
-  if(hamburger){
-    hamburger.addEventListener("click", () => {
-      navMenu.classList.toggle("active");
-    });
-  }
+  hamburger.addEventListener("click", () => {
+    navMenu.classList.add("active");
+    overlay.classList.add("active");
+  });
+
+  overlay.addEventListener("click", () => {
+    navMenu.classList.remove("active");
+    overlay.classList.remove("active");
+  });
+
+  closeMenu.addEventListener("click", () => {
+    navMenu.classList.remove("active");
+    overlay.classList.remove("active");
+  });
 });
 </script>
 
