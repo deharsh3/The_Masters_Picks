@@ -542,14 +542,15 @@ async function renderFinalLeaderboard(){
     const tiebreakerHtml =
       team.tiebreaker !== undefined
         ? `<div class="tiebreaker">
-             Tiebreaker: ${team.tiebreaker.toFixed(1)}
-           </div>`
+            Tiebreaker: ${team.tiebreaker.toFixed(1)}
+          </div>`
         : ""
 
     row.innerHTML=`
       <td>${i+1}</td>
       <td class="team-row ${i < 3 ? 'top-team' : ''}">
-        ${medal}${team.name}
+        <span class="arrow">▶</span>
+        ${medal}${titleCase(team.name)}
         ${tiebreakerHtml}
       </td>
       <td>
@@ -559,6 +560,59 @@ async function renderFinalLeaderboard(){
     `
 
     tbody.appendChild(row)
+
+    // ✅ DETAIL ROW (THIS WAS MISSING)
+    const detailRow=document.createElement("tr")
+    detailRow.style.display="none"
+
+    const playerHtml = team.players.map(p=>{
+
+      const counting =
+        team.best4.some(b =>
+          normalizeName(b) === normalizeName(p.name)
+        )
+
+      let scoreColor = "black"
+      if(p.score < 0) scoreColor = "red"
+      if(p.score > 0) scoreColor = "#555"
+
+      return `
+        <div class="player-row">
+          <span>
+            ${counting ? "✔" : "✖"} ${titleCase(p.name)}
+          </span>
+
+          <span ${counting?'style="font-weight:bold"':''}>
+            <span style="color:${scoreColor}">
+              ${p.score}
+            </span>
+          </span>
+        </div>
+      `
+    }).join("")
+
+    detailRow.innerHTML=`
+      <td colspan="3" style="background:#f3f3f3">
+        ${playerHtml}
+      </td>
+    `
+
+    tbody.appendChild(detailRow)
+
+    // ✅ CLICK HANDLER (ALSO MISSING)
+    row.onclick=()=>{
+
+      const expanded =
+        detailRow.style.display === "table-row"
+
+      detailRow.style.display =
+        expanded ? "none" : "table-row"
+
+      const arrow = row.querySelector(".arrow")
+
+      arrow.textContent =
+        expanded ? "▶" : "▼"
+    }
 
   })
 
