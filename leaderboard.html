@@ -375,7 +375,9 @@ row.innerHTML=`
 ${medal}${team.name}
 
 <div class="tiebreaker">
-Tiebreaker (avg of 5 lowest odds): ${team.tiebreaker.toFixed(1)}
+Tiebreaker (avg of 5 lowest odds): ${team.tiebreaker !== undefined
+  ? team.tiebreaker.toFixed(1)
+  : ""}
 </div>
 
 </td>
