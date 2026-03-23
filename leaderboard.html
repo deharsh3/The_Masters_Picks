@@ -153,6 +153,9 @@ const LEADERBOARD_ENDPOINT =
 const PLAYERS_ENDPOINT =
 "https://pufdcfsgdabjtnxfxuat.supabase.co/rest/v1/players?select=name,odds"
 
+const RESULTS_ENDPOINT =
+"https://pufdcfsgdabjtnxfxuat.supabase.co/rest/v1/pool_results"
+
 let playerOdds = {}
 
 let teams=[]
@@ -375,12 +378,11 @@ row.innerHTML=`
 ${medal}${team.name}
 
 <div class="tiebreaker">
-Tiebreaker (avg of 5 lowest odds): ${team.tiebreaker !== undefined
-  ? team.tiebreaker.toFixed(1)
-  : ""}
+Tiebreaker (avg of 5 lowest odds): ${team.tiebreaker.toFixed(1)}
 </div>
 
 </td>
+
 
 <td>${team.total}
 <div class="tiebreaker">
@@ -399,7 +401,7 @@ const playerHtml = team.players.map(p=>{
 
 const counting =
 team.best4.some(
- b => normalizeName(b.name) === normalizeName(p.name)
+ b => normalizeName(b) === normalizeName(p.name)
 )
 
 const scoreObj = scores[normalizeName(p.name)]
@@ -479,7 +481,7 @@ async function renderFinalLeaderboard(){
   const pool = localStorage.getItem("pool")
 
   const res = await fetch(
-    `${RESULTS_ENDPOINT}&pool_name=eq.${pool}`,
+    `${RESULTS_ENDPOINT}?select=*&pool_name=eq.${pool}`,
     {
       headers:{
         apikey:API_KEY,
@@ -490,13 +492,33 @@ async function renderFinalLeaderboard(){
 
   let data = await res.json()
 
-  if(!data.length) return
+  if(!data.length){
+    console.log("No pool_results found")
+    return
+  }
 
   let leaderboard = data[0].leaderboard
 
-  if(typeof leaderboard === "string"){
-    leaderboard = JSON.parse(leaderboard)
+  try{
+    if(typeof leaderboard === "string"){
+      leaderboard = JSON.parse(leaderboard)
+    }
+  } catch(e){
+    console.error("Failed to parse leaderboard:", leaderboard)
+    return
   }
+
+  // ✅ SORT (important)
+  leaderboard.sort((a,b)=>{
+
+    if(a.total !== b.total){
+      return a.total - b.total
+    }
+
+    return (b.tiebreaker ?? 0) - (a.tiebreaker ?? 0)
+  })
+
+  const leaderScore = leaderboard[0]?.total ?? 0
 
   const tbody = document.querySelector("#leaderboard tbody")
   tbody.innerHTML=""
@@ -510,10 +532,30 @@ async function renderFinalLeaderboard(){
     if(i===1) medal="🥈 "
     if(i===2) medal="🥉 "
 
+    const shotsBack = team.total - leaderScore
+
+    const shotsBackText =
+      shotsBack === 0
+        ? "Leader"
+        : `${shotsBack} ${shotsBack === 1 ? "shot" : "shots"} back`
+
+    const tiebreakerHtml =
+      team.tiebreaker !== undefined
+        ? `<div class="tiebreaker">
+             Tiebreaker: ${team.tiebreaker.toFixed(1)}
+           </div>`
+        : ""
+
     row.innerHTML=`
       <td>${i+1}</td>
-      <td>${medal}${team.name}</td>
-      <td>${team.total}</td>
+      <td class="team-row ${i < 3 ? 'top-team' : ''}">
+        ${medal}${team.name}
+        ${tiebreakerHtml}
+      </td>
+      <td>
+        ${team.total}
+        <div class="tiebreaker">${shotsBackText}</div>
+      </td>
     `
 
     tbody.appendChild(row)
