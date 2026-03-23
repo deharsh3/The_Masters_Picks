@@ -2,46 +2,45 @@
 <html>
 
 <head>
-<title>Masters Pool Leaderboard</title>
+<title>Pool History</title>
 
 <link rel="stylesheet" href="styles.css">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800&display=swap" rel="stylesheet">
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body>
+<body class="valspar">
 
-<div id="header">
-
-<div class="hero-image"></div>
-
+<!-- HEADER -->
+<div class="header">
+  <div class="hero-image"></div>
 </div>
 
-<div id="tournamentInfo">
+<!-- NAVBAR -->
+<div class="navbar" id="navbar">
+  <div id="hamburger">☰</div>
 
-<div id="tournamentStatus">
-Live Tournament Scores
+  <div id="navMenu">
+    <div id="closeMenu" class="closeMenu">✕</div>
+    <div class="menu-header">Menu</div>
+    <a href="index.html">Submit Picks</a>
+    <a href="teams.html">View Teams</a>
+    <a href="tournament.html">Tournament</a>
+    <a href="leaderboard.html">Leaderboard</a>
+    <a href="history.html">History</a>
+  </div>
 </div>
 
+<div id="overlay"></div>
+
+<h1>Pool History</h1>
+
+<div class="updateInfo">
+  <span id="lastUpdated">Last Updated: --</span>
 </div>
-
-<div id="updateInfo">
-
-<span id="lastUpdated">Last Updated: --</span>
-
-<span class="refreshSpinner"
-id ="refreshSpinner">⏳ Updating...</span>
-
-</div>
-
-<div id="expandNote">
-Click a team to see their players ▼
-</div>
-
-<h1>Pool Leaderboard</h1>
 
 <h2 id="poolTitle"></h2>
 
@@ -56,8 +55,7 @@ onkeyup="filterTeams()"
 </div>
 
 <div style="margin-bottom:15px;">
-<select id="poolSelector" onchange="changePool()">
-</select>
+<select id="poolSelector" onchange="changePool()"></select>
 </div>
 
 <table id="leaderboard">
@@ -72,6 +70,7 @@ onkeyup="filterTeams()"
 </table>
 
 <script>
+
 const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1ZmRjZnNnZGFianRueGZ4dWF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjA0MDIsImV4cCI6MjA4OTAzNjQwMn0.p8BiiUN6uHOcVQVDEOEAgc-B4ZsyLQtDqsIZ-tnu63c"
 
 const RESULTS_ENDPOINT =
@@ -80,205 +79,208 @@ const RESULTS_ENDPOINT =
 let results = []
 
 function normalizeName(name){
-return name
-.normalize("NFD")
-.replace(/[\u0300-\u036f]/g,"")
-.toLowerCase()
-.trim()
+  return name
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g,"")
+  .toLowerCase()
+  .trim()
 }
 
 function titleCase(name){
-return name.replace(/\b\w/g,c=>c.toUpperCase())
+  return name.replace(/\b\w/g,c=>c.toUpperCase())
 }
 
 async function loadHistory(){
 
-const res = await fetch(RESULTS_ENDPOINT,{
-headers:{
-apikey:API_KEY,
-Authorization:`Bearer ${API_KEY}`
+  const res = await fetch(RESULTS_ENDPOINT,{
+    headers:{
+      apikey:API_KEY,
+      Authorization:`Bearer ${API_KEY}`
+    }
+  })
+
+  results = await res.json()
+
+  results.sort((a,b)=>
+    new Date(b.created_at) - new Date(a.created_at)
+  )
+
+  populateDropdown()
+
+  if(results.length){
+    loadPool(results[0].id)
+  }
+
+  updateTimestamp()
 }
-})
 
-results = await res.json()
-
-// sort newest tournaments first
-results.sort((a,b)=>
-new Date(b.created_at) - new Date(a.created_at)
-)
-
-populateDropdown()
-
-if(results.length){
-loadPool(results[0].id)
-}
-
+function updateTimestamp(){
+  const now = new Date()
+  document.getElementById("lastUpdated").innerText =
+    "Last Updated: " +
+    now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
 }
 
 function populateDropdown(){
 
-const selector = document.getElementById("poolSelector")
+  const selector = document.getElementById("poolSelector")
+  selector.innerHTML=""
 
-selector.innerHTML=""
-
-results.forEach(r=>{
-
-const option = document.createElement("option")
-
-option.value = r.id
-
-option.textContent =
-`${r.year} ${r.tournament_name} — ${r.pool_name}`
-
-selector.appendChild(option)
-
-})
-
+  results.forEach(r=>{
+    const option = document.createElement("option")
+    option.value = r.id
+    option.textContent =
+      `${r.year} ${r.tournament_name} — ${r.pool_name}`
+    selector.appendChild(option)
+  })
 }
 
 function changePool(){
-
-const id = document.getElementById("poolSelector").value
-
-loadPool(id)
-
+  const id = document.getElementById("poolSelector").value
+  loadPool(id)
 }
 
 function loadPool(id){
 
-const row = results.find(r => r.id == id)
+  const row = results.find(r => r.id == id)
 
-document.getElementById("poolTitle").innerText =
-`${row.year} ${row.tournament_name} — ${row.pool_name}`
+  document.getElementById("poolTitle").innerText =
+    `${row.year} ${row.tournament_name} — ${row.pool_name}`
 
-let leaderboard = row.leaderboard
+  let leaderboard = row.leaderboard
 
-// handle JSONB string response
-if(typeof leaderboard === "string"){
-leaderboard = JSON.parse(leaderboard)
-}
+  if(typeof leaderboard === "string"){
+    leaderboard = JSON.parse(leaderboard)
+  }
 
-renderLeaderboard(leaderboard)
-
+  renderLeaderboard(leaderboard)
 }
 
 function renderLeaderboard(teams){
 
-const tbody = document.querySelector("#leaderboard tbody")
-tbody.innerHTML=""
+  const tbody = document.querySelector("#leaderboard tbody")
+  tbody.innerHTML=""
 
-teams.forEach((team,i)=>{
+  teams.forEach((team,i)=>{
 
-const row=document.createElement("tr")
+    const row=document.createElement("tr")
 
-let medal=""
+    let medal=""
+    if(i===0) medal="🥇 "
+    if(i===1) medal="🥈 "
+    if(i===2) medal="🥉 "
 
-if(i===0) medal="🥇 "
-if(i===1) medal="🥈 "
-if(i===2) medal="🥉 "
+    row.innerHTML=`
+      <td>${i+1}</td>
+      <td class="team-row ${i < 3 ? 'top-team' : ''}">
+        <span class="arrow">▶</span>
+        ${medal}${titleCase(team.name)}
+      </td>
+      <td>${team.total}</td>
+    `
 
-row.innerHTML=`
-<td>${i+1}</td>
+    tbody.appendChild(row)
 
-<td style="cursor:pointer;font-weight:${i<3?'bold':'normal'}">
+    const detailRow=document.createElement("tr")
+    detailRow.style.display="none"
 
-<span class="arrow">▶</span>
-${medal}${team.name}
+    const playerHtml = team.players.map(p=>{
 
-</td>
+      const counting =
+        team.best4.some(b =>
+          normalizeName(b.name) === normalizeName(p.name)
+        )
 
-<td>${team.total}</td>
-`
+      return `
+        <div class="player-row">
+          <span>
+            ${counting ? "✔" : "✖"} ${titleCase(p.name)}
+          </span>
+          <span ${counting?'style="font-weight:bold"':''}>
+            ${p.score}
+          </span>
+        </div>
+      `
 
-tbody.appendChild(row)
+    }).join("")
 
-const detailRow=document.createElement("tr")
+    detailRow.innerHTML=`
+      <td colspan="3" style="background:#f3f3f3">
+        ${playerHtml}
+      </td>
+    `
 
-detailRow.style.display="none"
+    tbody.appendChild(detailRow)
 
-const playerHtml = team.players.map(p=>{
+    row.onclick=()=>{
+      const expanded =
+        detailRow.style.display === "table-row"
 
-const counting =
-team.best4.some(b =>
-normalizeName(b.name) === normalizeName(p.name)
-)
+      detailRow.style.display =
+        expanded ? "none" : "table-row"
 
-return `
-<div style="display:flex;justify-content:space-between">
+      const arrow = row.querySelector(".arrow")
+      arrow.textContent = expanded ? "▶" : "▼"
+    }
 
-<span>
-${counting ? "✔" : "✖"} ${titleCase(p.name)}
-</span>
-
-<span ${counting?'style="font-weight:bold"':''}>
-${p.score}
-</span>
-
-</div>
-`
-
-}).join("")
-
-detailRow.innerHTML=`
-<td colspan="3" style="background:#f3f3f3">
-${playerHtml}
-</td>
-`
-
-tbody.appendChild(detailRow)
-
-row.onclick=()=>{
-
-const expanded =
-detailRow.style.display === "table-row"
-
-detailRow.style.display =
-expanded ? "none" : "table-row"
-
-const arrow = row.querySelector(".arrow")
-
-arrow.textContent =
-expanded ? "▶" : "▼"
-
-}
-
-})
-
+  })
 }
 
 function filterTeams(){
 
-const input =
-document.getElementById("teamSearch")
-.value
-.toLowerCase()
+  const input =
+    document.getElementById("teamSearch")
+    .value
+    .toLowerCase()
 
-const rows =
-document.querySelectorAll("#leaderboard tbody tr")
+  const rows =
+    document.querySelectorAll("#leaderboard tbody tr")
 
-for(let i=0;i<rows.length;i+=2){
+  for(let i=0;i<rows.length;i+=2){
 
-const teamRow = rows[i]
-const detailRow = rows[i+1]
+    const teamRow = rows[i]
+    const detailRow = rows[i+1]
 
-const text =
-teamRow.innerText.toLowerCase()
+    const text =
+      teamRow.innerText.toLowerCase()
 
-const match = text.includes(input)
+    const match = text.includes(input)
 
-teamRow.style.display =
-match ? "" : "none"
+    teamRow.style.display =
+      match ? "" : "none"
 
-detailRow.style.display = "none"
-
-}
-
+    detailRow.style.display = "none"
+  }
 }
 
 loadHistory()
 
 </script>
 
-</body>
+<!-- NAVBAR SCRIPT -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const hamburger = document.getElementById("hamburger");
+  const navMenu = document.getElementById("navMenu");
+  const overlay = document.getElementById("overlay");
+  const closeMenu = document.getElementById("closeMenu");
 
+  hamburger.addEventListener("click", () => {
+    navMenu.classList.add("active");
+    overlay.classList.add("active");
+  });
+
+  overlay.addEventListener("click", () => {
+    navMenu.classList.remove("active");
+    overlay.classList.remove("active");
+  });
+
+  closeMenu.addEventListener("click", () => {
+    navMenu.classList.remove("active");
+    overlay.classList.remove("active");
+  });
+});
+</script>
+
+</body>
 </html>

@@ -200,6 +200,8 @@ playerOdds[normalizeName(p.name)] = Number(p.odds)
 
 let scores={}
 
+let isFinal = false
+
 async function loadScores(){
 
 document.getElementById("refreshSpinner").style.display="inline"
@@ -221,6 +223,7 @@ const data = await res.json()
 console.log("Leaderboard response:", data)
 
 scores = data.scores || {}
+isFinal = data.isFinal || false
 
 if(data.cutLine !== undefined && data.cutLine !== null){
 document.getElementById("cutline").innerText =
@@ -255,13 +258,15 @@ return name.replace(/\b\w/g, c => c.toUpperCase())
 
 async function init(){
 
-await loadTeams()
-
-await loadPlayerOdds()
-
 await loadScores()
 
-renderLeaderboard()
+if(!isFinal){
+  await loadTeams()
+  await loadPlayerOdds()
+  renderLeaderboard()
+} else {
+  renderFinalLeaderboard()
+}
 
 }
 
@@ -464,6 +469,54 @@ expanded ? "▶" : "▼"
 }
 
 })
+
+}
+
+async function renderFinalLeaderboard(){
+
+  const pool = localStorage.getItem("pool")
+
+  const res = await fetch(
+    `${RESULTS_ENDPOINT}&pool_name=eq.${pool}`,
+    {
+      headers:{
+        apikey:API_KEY,
+        Authorization:`Bearer ${API_KEY}`
+      }
+    }
+  )
+
+  let data = await res.json()
+
+  if(!data.length) return
+
+  let leaderboard = data[0].leaderboard
+
+  if(typeof leaderboard === "string"){
+    leaderboard = JSON.parse(leaderboard)
+  }
+
+  const tbody = document.querySelector("#leaderboard tbody")
+  tbody.innerHTML=""
+
+  leaderboard.forEach((team,i)=>{
+
+    const row=document.createElement("tr")
+
+    let medal=""
+    if(i===0) medal="🥇 "
+    if(i===1) medal="🥈 "
+    if(i===2) medal="🥉 "
+
+    row.innerHTML=`
+      <td>${i+1}</td>
+      <td>${medal}${team.name}</td>
+      <td>${team.total}</td>
+    `
+
+    tbody.appendChild(row)
+
+  })
 
 }
 
