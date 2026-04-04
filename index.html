@@ -191,7 +191,7 @@ const SUPABASE_FUNCTION =
 "https://pufdcfsgdabjtnxfxuat.functions.supabase.co/submitTeam"
 
 const UPDATE_ODDS_FUNCTION =
-"https://pufdcfsgdabjtnxfxuat.functions.supabase.co/updateOdds"
+"https://pufdcfsgdabjtnxfxuat.functions.supabase.co/updateOdds_Majors"
 
 const PLAYERS_ENDPOINT =
 "https://pufdcfsgdabjtnxfxuat.supabase.co/rest/v1/players?select=*"
@@ -214,12 +214,18 @@ console.log("Checking players table")
 
 try{
 
-await fetch(UPDATE_ODDS_FUNCTION,{
-headers:{
-apikey:API_KEY,
-Authorization:`Bearer ${API_KEY}`
-}
+const res = await fetch(UPDATE_ODDS_FUNCTION, {
+  headers: {
+    apikey: API_KEY,
+    Authorization: `Bearer ${API_KEY}`
+  }
 })
+
+const data = await res.json()
+
+if(data.lockTimeUTC){
+  window.PICK_LOCK_TIME = new Date(data.lockTimeUTC)
+}
 
 console.log("updateOdds check completed")
 
