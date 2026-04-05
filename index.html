@@ -134,7 +134,8 @@ id="lockCountdown"
 
 <label>Your Name</label>
 <br>
-<input class="search-container">
+<input id="search-container"
+class="search-container">
 
 <h2>Favorites (pick 2)</h2>
 <div class="favorite"
@@ -305,7 +306,7 @@ btn.classList.add("selected")
 async function submitTeam(){
 
 const name=document
-.getElementById("name")
+.getElementById("search-container")
 .value
 .trim()
 
