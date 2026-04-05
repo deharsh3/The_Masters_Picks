@@ -26,7 +26,7 @@ overlay.addEventListener("click", () => {
 });
 </script>
 
-<body class="valspar">
+<body class="masters">
 
 <div class="header"
 id="header">
@@ -111,6 +111,8 @@ return name.replace(/\b\w/g,c=>c.toUpperCase())
 
 async function loadLeaderboard(){
 
+document.getElementById("refreshSpinner").style.display="inline"
+
 const res = await fetch(
 `${FULL_LEADERBOARD_ENDPOINT}`,
 {
@@ -141,6 +143,8 @@ players = JSON.parse(players)
 // set title
 document.getElementById("title").innerText =
 `${row.tournament_name} Leaderboard`
+
+document.getElementById("refreshSpinner").style.display="none"
 
 const now = new Date()
 
