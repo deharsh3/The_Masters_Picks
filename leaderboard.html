@@ -400,8 +400,9 @@ detailRow.style.display="none"
 const playerHtml = team.players.map(p=>{
 
 const counting =
-team.best4.some(
- b => normalizeName(b) === normalizeName(p.name)
+team.best4.some(b =>
+  normalizeName(typeof b === "string" ? b : b.name)
+  === normalizeName(p.name)
 )
 
 const scoreObj = scores[normalizeName(p.name)]
@@ -569,7 +570,8 @@ async function renderFinalLeaderboard(){
 
       const counting =
         team.best4.some(b =>
-          normalizeName(b) === normalizeName(p.name)
+          normalizeName(typeof b === "string" ? b : b.name)
+          === normalizeName(p.name)
         )
 
       let scoreColor = "black"
