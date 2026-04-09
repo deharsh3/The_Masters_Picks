@@ -196,7 +196,7 @@ Authorization:`Bearer ${API_KEY}`
 const players = await res.json()
 
 players.forEach(p=>{
-playerOdds[normalizeName(p.name)] = Number(p.odds)
+playerOdds[normalizeName(p)] = Number(p.odds)
 })
 
 }
@@ -402,10 +402,10 @@ const playerHtml = team.players.map(p=>{
 const counting =
 team.best4.some(b =>
   normalizeName(typeof b === "string" ? b : b.name)
-  === normalizeName(p.name)
+  === normalizeName(p)
 )
 
-const scoreObj = scores[normalizeName(p.name)]
+const scoreObj = scores[normalizeName(p)]
 
 const score = scoreObj?.score ?? 0
 const hole = scoreObj?.hole
@@ -429,14 +429,14 @@ return `
 <div class="player-row">
 
 <span style="${missedCut?'color:#999;text-decoration:line-through':''}">
-${counting ? "✔" : "✖"} ${statusIcon} ${titleCase(p.name)}
+${counting ? "✔" : "✖"} ${statusIcon} ${titleCase(p)}
 </span>
 
 <span ${counting?'style="font-weight:bold"':''}>
 
 <span style="color:${scoreColor}">
 ${score}
-${scores[normalizeName(p.name)]?.madeCut === false ? " MC" : ""}
+${scores[normalizeName(p)]?.madeCut === false ? " MC" : ""}
 </span>
 
 ${complete ? " F" : ""}
@@ -571,7 +571,7 @@ async function renderFinalLeaderboard(){
       const counting =
         team.best4.some(b =>
           normalizeName(typeof b === "string" ? b : b.name)
-          === normalizeName(p.name)
+          === normalizeName(p)
         )
 
       let scoreColor = "black"
@@ -581,7 +581,7 @@ async function renderFinalLeaderboard(){
       return `
         <div class="player-row">
           <span>
-            ${counting ? "✔" : "✖"} ${titleCase(p.name)}
+            ${counting ? "✔" : "✖"} ${titleCase(p)}
           </span>
 
           <span ${counting?'style="font-weight:bold"':''}>
