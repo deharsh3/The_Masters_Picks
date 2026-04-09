@@ -245,12 +245,20 @@ console.log("Scores:", scores)
 
 }
 
+function fixEncoding(str) {
+  try {
+    return decodeURIComponent(escape(str))
+  } catch (e) {
+    return str
+  }
+}
+
 function normalizeName(name){
-return name
-.normalize("NFD")
-.replace(/[\u0300-\u036f]/g,"")
-.toLowerCase()
-.trim()
+  return fixEncoding(name)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .toLowerCase()
+    .trim()
 }
 
 function titleCase(name){
