@@ -258,9 +258,9 @@ function normalizeName(name){
 }
 
 function titleCase(name){
+  if(!name || typeof name !== "string") return ""
 
-return name.replace(/\b\w/g, c => c.toUpperCase())
-
+  return name.replace(/\b\w/g, c => c.toUpperCase())
 }
 
 async function init(){
@@ -585,7 +585,7 @@ async function renderFinalLeaderboard(){
       return `
         <div class="player-row">
           <span>
-            ${counting ? "✔" : "✖"} ${titleCase(p)}
+            ${counting ? "✔" : "✖"} ${titleCase(p.name)}
           </span>
 
           <span ${counting?'style="font-weight:bold"':''}>
