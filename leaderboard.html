@@ -196,9 +196,7 @@ Authorization:`Bearer ${API_KEY}`
 const players = await res.json()
 
 players.forEach(p=>{
-if(p.name && typeof p.name === "string"){
-  playerOdds[normalizeName(p.name)] = Number(p.odds)
-}
+playerOdds[normalizeName(p.name)] = Number(p.odds)
 })
 
 }
@@ -248,19 +246,17 @@ console.log("Scores:", scores)
 }
 
 function normalizeName(name){
-  if(!name || typeof name !== "string") return ""
-
-  return name
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"")
-    .toLowerCase()
-    .trim()
+return name
+.normalize("NFD")
+.replace(/[\u0300-\u036f]/g,"")
+.toLowerCase()
+.trim()
 }
 
 function titleCase(name){
-  if(!name || typeof name !== "string") return ""
 
-  return name.replace(/\b\w/g, c => c.toUpperCase())
+return name.replace(/\b\w/g, c => c.toUpperCase())
+
 }
 
 async function init(){
@@ -285,10 +281,24 @@ const players =
    ? JSON.parse(team.players)
    : team.players
 
-const playerScores = players.map(p=>({
- name:p,
- score:scores?.[normalizeName(p)]?.score ?? 0
-}))
+const playerScores = players.map(p => {
+
+  const normalized = normalizeName(p)
+  const scoreObj = scores?.[normalized]
+
+  // 🔍 DEBUG LOGS
+  console.log("---- PLAYER DEBUG ----")
+  console.log("Raw player:", p)
+  console.log("Normalized:", normalized)
+  console.log("Score lookup:", scoreObj)
+  console.log("Available score keys:", Object.keys(scores).slice(0,10)) // sample
+
+  return {
+    name: p,
+    score: scoreObj?.score ?? 0
+  }
+
+})
 
 playerScores.sort((a,b)=>a.score-b.score)
 
@@ -406,10 +416,10 @@ const playerHtml = team.players.map(p=>{
 const counting =
 team.best4.some(b =>
   normalizeName(typeof b === "string" ? b : b.name)
-  === normalizeName(p)
+  === normalizeName(p.name)
 )
 
-const scoreObj = scores[normalizeName(p)]
+const scoreObj = scores[normalizeName(p.name)]
 
 const score = scoreObj?.score ?? 0
 const hole = scoreObj?.hole
@@ -433,14 +443,14 @@ return `
 <div class="player-row">
 
 <span style="${missedCut?'color:#999;text-decoration:line-through':''}">
-${counting ? "✔" : "✖"} ${statusIcon} ${titleCase(p)}
+${counting ? "✔" : "✖"} ${statusIcon} ${titleCase(p.name)}
 </span>
 
 <span ${counting?'style="font-weight:bold"':''}>
 
 <span style="color:${scoreColor}">
 ${score}
-${scores[normalizeName(p)]?.madeCut === false ? " MC" : ""}
+${scores[normalizeName(p.name)]?.madeCut === false ? " MC" : ""}
 </span>
 
 ${complete ? " F" : ""}
@@ -575,7 +585,7 @@ async function renderFinalLeaderboard(){
       const counting =
         team.best4.some(b =>
           normalizeName(typeof b === "string" ? b : b.name)
-          === normalizeName(p)
+          === normalizeName(p.name)
         )
 
       let scoreColor = "black"
